@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { getBrowserAuthOrigin } from "@/lib/auth-origin";
 import { createClient } from "@/lib/supabase/browser";
 
 type AuthGateProps = {
@@ -22,7 +23,7 @@ export function AuthGate({ mode, error }: AuthGateProps) {
     setLocalError(null);
     try {
       const supabase = createClient();
-      const origin = window.location.origin;
+      const origin = getBrowserAuthOrigin();
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {

@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
+import { getAuthOrigin } from "@/lib/auth-origin";
 import { createClient } from "@/lib/supabase/server";
 
 /** Supabase OAuth PKCE callback — Google returns here with ?code= */
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams } = new URL(request.url);
+  const origin = getAuthOrigin(request);
   const code = searchParams.get("code");
   const next = searchParams.get("next") || "/";
   const safeNext = next.startsWith("/") ? next : "/";
