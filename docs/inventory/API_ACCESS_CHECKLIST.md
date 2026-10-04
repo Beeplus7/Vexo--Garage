@@ -16,7 +16,7 @@ Paste these into `credentials/` or `.env.local` when you have them (you said you
 |---|-------------|-----------------|
 | 1 | DVLA Vehicle Enquiry API | Register at UK gov DVLA API; provide `DVLA_API_KEY`. |
 | 2 | DVSA MOT History API | Apply for MOT history trade API access; provide `DVSA_API_KEY`. |
-| 4 | Stripe Connect | Stripe account + Connect enabled. Provide `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET` (test first). |
+| 4 | Stripe Connect | ✅ Test secret + webhook + catalog built from passport-paper (VisaGuide OS sandbox). **Still need matching publishable key** for `acct_1TyEpWK…` (see `docs/backend/STRIPE_SETUP.md`). |
 | 5 | Google Maps Platform | GCP project with Maps/Places/Distance Matrix enabled; provide `GOOGLE_MAPS_API_KEY`. |
 | 6 | Supabase service role + anon JWT | From Supabase dashboard: `SUPABASE_ANON_KEY` (JWT) and `SUPABASE_SERVICE_ROLE_KEY` (if different from publishable key you already shared). |
 | 7 | Twilio SMS | Twilio account + UK number. Provide `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_PHONE_NUMBER`. |
@@ -54,7 +54,9 @@ Paste these into `credentials/` or `.env.local` when you have them (you said you
 ## Already on hand locally
 
 - Supabase URL `vdtyzqzdakfckpcjxxpi`
-- Supabase publishable key (local `.env.local`)
-- Postgres `DATABASE_URL` (local credentials)
-- Domain `vexogarage.co.uk`
-- VPS `87.106.103.43`
+- Supabase publishable key + anon JWT + service_role JWT (local `.env.local` + `credentials/.env.supabase`)
+- Postgres `DATABASE_URL` (local credentials; VPS uses eu-west-1 pooler `:6543` + `pgbouncer=true`)
+- Domain `vexogarage.co.uk` + SSL live → PM2 `vexo-web` `:3001`
+- VPS `87.106.103.43` (Shopfooty `:4001` KEEP LIVE; VisaGuide `:3000`)
+- 38 design pages wired in App Router; Twilio SMS helper ready (awaiting keys)
+- Next for entrance gate: `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` / `NEXT_PUBLIC_GOOGLE_CLIENT_ID` + `TWILIO_*`

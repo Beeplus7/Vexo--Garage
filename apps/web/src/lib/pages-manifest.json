@@ -1,0 +1,423 @@
+{
+  "totalDesigns": 38,
+  "copied": [
+    {
+      "n": 1,
+      "source": "vexo_x5f_garage_x5f_hero_x5f_landing_x5f_page_x5f_1_x5f_of_x5f_38.html",
+      "public": "/design/pages/01.html"
+    },
+    {
+      "n": 2,
+      "source": "vexo_x5f_garage_x5f_page_x5f_2_x5f_of_x5f_38_x5f_garages_x5f_list.html",
+      "public": "/design/pages/02.html"
+    },
+    {
+      "n": 3,
+      "source": "vexo_x5f_garage_x5f_page_x5f_3_x5f_of_x5f_38_x5f_booking_x5f_detail.html",
+      "public": "/design/pages/03.html"
+    },
+    {
+      "n": 4,
+      "source": "vexo_x5f_garage_x5f_page_x5f_4_x5f_of_x5f_38_x5f_garage_x5f_dashboard.html",
+      "public": "/design/pages/04.html"
+    },
+    {
+      "n": 5,
+      "source": "vexo_x5f_garage_x5f_page_x5f_5_x5f_of_x5f_38_x5f_passport.html",
+      "public": "/design/pages/05.html"
+    },
+    {
+      "n": 6,
+      "source": "vexo_x5f_garage_x5f_page_x5f_6_x5f_of_x5f_38_x5f_garage_x5f_signup.html",
+      "public": "/design/pages/06.html"
+    },
+    {
+      "n": 7,
+      "source": "vexo_x5f_garage_x5f_page_x5f_7_x5f_of_x5f_38_x5f_admin_x5f_dashboard.html",
+      "public": "/design/pages/07.html"
+    },
+    {
+      "n": 8,
+      "source": "vexo_x5f_garage_x5f_page_x5f_8_x5f_of_x5f_38_x5f_how_x5f_it_x5f_works.html",
+      "public": "/design/pages/08.html"
+    },
+    {
+      "n": 9,
+      "source": "vexo_x5f_garage_x5f_page_x5f_9_x5f_of_x5f_38_x5f_trust_x5f_safety.html",
+      "public": "/design/pages/09.html"
+    },
+    {
+      "n": 10,
+      "source": "vexo_x5f_garage_x5f_page_x5f_10_x5f_of_x5f_38_x5f_pricing.html",
+      "public": "/design/pages/10.html"
+    },
+    {
+      "n": 11,
+      "source": "vexo_x5f_garage_x5f_page_x5f_11_x5f_of_x5f_38_x5f_for_x5f_garages.html",
+      "public": "/design/pages/11.html"
+    },
+    {
+      "n": 12,
+      "source": "vexo_x5f_garage_x5f_page_x5f_12_x5f_of_x5f_38_x5f_widget.html",
+      "public": "/design/pages/12.html"
+    },
+    {
+      "n": 13,
+      "source": "vexo_x5f_garage_x5f_page_x5f_13_x5f_of_x5f_38_x5f_booking_x5f_success.html",
+      "public": "/design/pages/13.html"
+    },
+    {
+      "n": 14,
+      "source": "vexo_x5f_garage_x5f_page_x5f_14_x5f_of_x5f_39_x5f_contact.html",
+      "public": "/design/pages/14.html"
+    },
+    {
+      "n": 15,
+      "source": "vexo_x5f_garage_x5f_page_x5f_15_x5f_of_x5f_38_x5f_garages_x5f_postcode.html",
+      "public": "/design/pages/15.html"
+    },
+    {
+      "n": 16,
+      "source": "vexo_x5f_garage_x5f_page_x5f_16_x5f_of_x5f_38_x5f_garage_x5f_detail.html",
+      "public": "/design/pages/16.html"
+    },
+    {
+      "n": 17,
+      "source": "vexo_x5f_garage_x5f_page_x5f_17_x5f_of_x5f_38_x5f_booking_x5f_detail.html",
+      "public": "/design/pages/17.html"
+    },
+    {
+      "n": 18,
+      "source": "vexo_x5f_garage_x5f_page_x5f_18_x5f_of_x5f_38_x5f_passport.html",
+      "public": "/design/pages/18.html"
+    },
+    {
+      "n": 19,
+      "source": "vexo_x5f_garage_x5f_page_x5f_19_x5f_of_x5f_38_x5f_garage_x5f_signup.html",
+      "public": "/design/pages/19.html"
+    },
+    {
+      "n": 20,
+      "source": "vexo_x5f_garage_x5f_page_x5f_20_x5f_of_x5f_38_x5f_garage_x5f_dashboard.html",
+      "public": "/design/pages/20.html"
+    },
+    {
+      "n": 21,
+      "source": "vexo_x5f_garage_x5f_page_x5f_21_x5f_of_x5f_38_x5f_admin_x5f_dashboard.html",
+      "public": "/design/pages/21.html"
+    },
+    {
+      "n": 22,
+      "source": "vexo_x5f_garage_x5f_page_x5f_22_x5f_of_x5f_38_x5f_widget.html",
+      "public": "/design/pages/22.html"
+    },
+    {
+      "n": 23,
+      "source": "vexo_x5f_garage_x5f_page_x5f_23_x5f_of_x5f_38_x5f_terms.html",
+      "public": "/design/pages/23.html"
+    },
+    {
+      "n": 24,
+      "source": "vexo_x5f_garage_x5f_page_x5f_24_x5f_of_x5f_38_x5f_privacy.html",
+      "public": "/design/pages/24.html"
+    },
+    {
+      "n": 25,
+      "source": "vexo_x5f_garage_x5f_page_x5f_25_x5f_of_x5f_38_x5f_contact.html",
+      "public": "/design/pages/25.html"
+    },
+    {
+      "n": 26,
+      "source": "vexo_x5f_garage_x5f_page_x5f_26_x5f_of_x5f_38_x5f_reviews.html",
+      "public": "/design/pages/26.html"
+    },
+    {
+      "n": 27,
+      "source": "vexo_x5f_garage_x5f_page_x5f_27_x5f_of_x5f_38_x5f_services.html",
+      "public": "/design/pages/27.html"
+    },
+    {
+      "n": 28,
+      "source": "vexo_x5f_garage_x5f_page_x5f_28_x5f_of_x5f_38_x5f_booking_x5f_success.html",
+      "public": "/design/pages/28.html"
+    },
+    {
+      "n": 29,
+      "source": "vexo_x5f_garage_x5f_page_x5f_29_x5f_of_x5f_38_x5f_booking_x5f_detail.html",
+      "public": "/design/pages/29.html"
+    },
+    {
+      "n": 30,
+      "source": "vexo_x5f_garage_x5f_page_x5f_30_x5f_of_x5f_38_x5f_passport.html",
+      "public": "/design/pages/30.html"
+    },
+    {
+      "n": 31,
+      "source": "vexo_x5f_garage_x5f_page_x5f_31_x5f_of_x5f_38_x5f_widget.html",
+      "public": "/design/pages/31.html"
+    },
+    {
+      "n": 32,
+      "source": "vexo_x5f_garage_x5f_page_x5f_32_x5f_of_x5f_38_x5f_garage_x5f_signup.html",
+      "public": "/design/pages/32.html"
+    },
+    {
+      "n": 33,
+      "source": "vexo_x5f_garage_x5f_page_x5f_33_x5f_of_x5f_38_x5f_garage_x5f_dashboard.html",
+      "public": "/design/pages/33.html"
+    },
+    {
+      "n": 34,
+      "source": "vexo_x5f_garage_x5f_page_x5f_34_x5f_of_x5f_38_x5f_admin.html",
+      "public": "/design/pages/34.html"
+    },
+    {
+      "n": 35,
+      "source": "vexo_x5f_garage_x5f_page_x5f_35_x5f_of_x5f_38_x5f_terms_x5f_privacy.html",
+      "public": "/design/pages/35.html"
+    },
+    {
+      "n": 36,
+      "source": "vexo_x5f_garage_x5f_page_x5f_36_x5f_of_x5f_38_x5f_sitemap_x5f_robots (1).html",
+      "public": "/design/pages/36.html"
+    },
+    {
+      "n": 37,
+      "source": "vexo_x5f_garage_x5f_page_x5f_37_x5f_of_x5f_38_x5f_api_x5f_routes (1).html",
+      "public": "/design/pages/37.html"
+    },
+    {
+      "n": 38,
+      "source": "vexo_x5f_garage_x5f_page_x5f_38_x5f_of_x5f_38_x5f_final_x5f_home.html",
+      "public": "/design/pages/38.html"
+    }
+  ],
+  "routes": [
+    {
+      "n": 38,
+      "route": "/",
+      "file": "page.tsx",
+      "title": "Home",
+      "design": 38
+    },
+    {
+      "n": 2,
+      "route": "/garages",
+      "file": "garages/page.tsx",
+      "title": "Garages",
+      "design": 2
+    },
+    {
+      "n": 15,
+      "route": "/garages/[postcode]",
+      "file": "garages/[postcode]/page.tsx",
+      "title": "Garages by postcode",
+      "design": 15
+    },
+    {
+      "n": 16,
+      "route": "/garage/[slug]",
+      "file": "garage/[slug]/page.tsx",
+      "title": "Garage detail",
+      "design": 16
+    },
+    {
+      "n": 11,
+      "route": "/garage",
+      "file": "garage/page.tsx",
+      "title": "For garages",
+      "design": 11
+    },
+    {
+      "n": 32,
+      "route": "/garage/signup",
+      "file": "garage/signup/page.tsx",
+      "title": "Garage signup",
+      "design": 32
+    },
+    {
+      "n": 33,
+      "route": "/garage/dashboard",
+      "file": "garage/dashboard/page.tsx",
+      "title": "Garage dashboard",
+      "design": 33
+    },
+    {
+      "n": 29,
+      "route": "/booking/[id]",
+      "file": "booking/[id]/page.tsx",
+      "title": "Booking detail",
+      "design": 29
+    },
+    {
+      "n": 28,
+      "route": "/booking/success",
+      "file": "booking/success/page.tsx",
+      "title": "Booking success",
+      "design": 28
+    },
+    {
+      "n": 30,
+      "route": "/passport/[reg]",
+      "file": "passport/[reg]/page.tsx",
+      "title": "Passport",
+      "design": 30
+    },
+    {
+      "n": 5,
+      "route": "/passport-info",
+      "file": "passport-info/page.tsx",
+      "title": "Passport info",
+      "design": 5
+    },
+    {
+      "n": 31,
+      "route": "/widget/[garageSlug]",
+      "file": "widget/[garageSlug]/page.tsx",
+      "title": "Embed widget",
+      "design": 31
+    },
+    {
+      "n": 8,
+      "route": "/how-it-works",
+      "file": "how-it-works/page.tsx",
+      "title": "How it works",
+      "design": 8
+    },
+    {
+      "n": 9,
+      "route": "/trust",
+      "file": "trust/page.tsx",
+      "title": "Trust & safety",
+      "design": 9
+    },
+    {
+      "n": 10,
+      "route": "/pricing",
+      "file": "pricing/page.tsx",
+      "title": "Pricing",
+      "design": 10
+    },
+    {
+      "n": 25,
+      "route": "/contact",
+      "file": "contact/page.tsx",
+      "title": "Contact",
+      "design": 25
+    },
+    {
+      "n": 26,
+      "route": "/reviews",
+      "file": "reviews/page.tsx",
+      "title": "Reviews",
+      "design": 26
+    },
+    {
+      "n": 27,
+      "route": "/services",
+      "file": "services/page.tsx",
+      "title": "Services",
+      "design": 27
+    },
+    {
+      "n": 23,
+      "route": "/terms",
+      "file": "terms/page.tsx",
+      "title": "Terms",
+      "design": 23
+    },
+    {
+      "n": 24,
+      "route": "/privacy",
+      "file": "privacy/page.tsx",
+      "title": "Privacy",
+      "design": 24
+    },
+    {
+      "n": 35,
+      "route": "/legal",
+      "file": "legal/page.tsx",
+      "title": "Terms & privacy",
+      "design": 35
+    },
+    {
+      "n": 34,
+      "route": "/admin",
+      "file": "admin/page.tsx",
+      "title": "Admin",
+      "design": 34
+    },
+    {
+      "n": 21,
+      "route": "/admin/dashboard",
+      "file": "admin/dashboard/page.tsx",
+      "title": "Admin dashboard",
+      "design": 21
+    },
+    {
+      "n": 34,
+      "route": "/admin/garages",
+      "file": "admin/garages/page.tsx",
+      "title": "Admin garages",
+      "design": 34
+    },
+    {
+      "n": 21,
+      "route": "/admin/keywords",
+      "file": "admin/keywords/page.tsx",
+      "title": "Admin keywords",
+      "design": 21
+    },
+    {
+      "n": 34,
+      "route": "/admin/bookings",
+      "file": "admin/bookings/page.tsx",
+      "title": "Admin bookings",
+      "design": 34
+    },
+    {
+      "n": 36,
+      "route": "/sitemap-preview",
+      "file": "sitemap-preview/page.tsx",
+      "title": "Sitemap preview",
+      "design": 36
+    },
+    {
+      "n": 37,
+      "route": "/dev/api-routes",
+      "file": "dev/api-routes/page.tsx",
+      "title": "API routes map",
+      "design": 37
+    },
+    {
+      "n": 0,
+      "route": "/auth/login",
+      "file": "auth/login/page.tsx",
+      "title": "Login",
+      "design": null,
+      "gate": true
+    },
+    {
+      "n": 0,
+      "route": "/auth/register",
+      "file": "auth/register/page.tsx",
+      "title": "Register",
+      "design": null,
+      "gate": true
+    },
+    {
+      "n": 0,
+      "route": "/boost",
+      "file": "boost/page.tsx",
+      "title": "Boost",
+      "design": 11
+    }
+  ],
+  "brand": {
+    "orange": "#FF6B00",
+    "brown": "#4A2C14",
+    "cream": "#FFF4EC",
+    "green": "#0A7A3E",
+    "tagline": "Your car. Your service. Your choice."
+  }
+}

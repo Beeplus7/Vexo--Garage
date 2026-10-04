@@ -32,3 +32,11 @@ export const VEXO_COMMISSION = {
 };
 
 export const GARAGE_SHARE = 4050; // £40.50 90% of £45 MOT
+
+/** Main product host (app) vs marketing apex */
+export const APP_URL =
+  process.env.NEXT_PUBLIC_APP_URL ||
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  "https://app.vexogarage.co.uk";
+export const MARKETING_URL =
+  process.env.NEXT_PUBLIC_MARKETING_URL || "https://vexogarage.co.uk";

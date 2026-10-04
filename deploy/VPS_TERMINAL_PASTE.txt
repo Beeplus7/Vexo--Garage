@@ -3,14 +3,17 @@
 # ISOLATION RULES (this VPS hosts many apps — do not reuse ports)
 # - visaguideos.com / VisaGuide  -> :3000   (KEEP)
 # - shopfooty-traffic            -> :4001   (KEEP LIVE)
-# - vexogarage.co.uk             -> :3001   (Vexo only)
+# - app.vexogarage.co.uk         -> :3001   (Vexo main app + SSL)
+# - vexogarage.co.uk             -> :3001   (Vexo marketing + SSL)
 # - nginx routes by server_name (domain), not by shared folders
 ############################################################
 
 ############################################################
 # VEXO GARAGE — paste in your Mac Terminal
-# SSL for vexogarage.co.uk is ALREADY LIVE (Let's Encrypt)
-# Expires: 2027-01-02 · auto-renew via certbot
+# SSL LIVE:
+# - https://app.vexogarage.co.uk  (main) — Let's Encrypt, expires 2027-01-02
+# - https://vexogarage.co.uk      (marketing) — Let's Encrypt, expires 2027-01-02
+# auto-renew via certbot
 ############################################################
 
 # --- A) SSH in ---
@@ -46,7 +49,9 @@ nano "$APP_DIR/.env"
 # SUPABASE_SERVICE_ROLE_KEY=eyJ...
 # NEXT_PUBLIC_SUPABASE_URL=https://vdtyzqzdakfckpcjxxpi.supabase.co
 # NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=...
-# NEXT_PUBLIC_SITE_URL=https://vexogarage.co.uk
+# NEXT_PUBLIC_SITE_URL=https://app.vexogarage.co.uk
+# NEXT_PUBLIC_APP_URL=https://app.vexogarage.co.uk
+# NEXT_PUBLIC_MARKETING_URL=https://vexogarage.co.uk
 # NODE_ENV=production
 # PORT=3001
 
@@ -85,8 +90,9 @@ systemctl enable vexo-web
 systemctl restart vexo-web
 systemctl status vexo-web --no-pager -l | head -25
 
+curl -I https://app.vexogarage.co.uk
 curl -I https://vexogarage.co.uk
 echo DONE
 
-# --- C) Optional: add www + api to the cert later ---
-# certbot --nginx -d vexogarage.co.uk -d www.vexogarage.co.uk -d api.vexogarage.co.uk --expand
+# --- C) Optional: expand marketing cert with www later ---
+# certbot --nginx -d vexogarage.co.uk -d www.vexogarage.co.uk --expand

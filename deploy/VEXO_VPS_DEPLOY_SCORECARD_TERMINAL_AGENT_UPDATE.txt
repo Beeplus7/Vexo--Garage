@@ -29,13 +29,20 @@ PHASE RESULTS
     - GET /api/postcode?postcode=OL8 4AB → cached OL8
     - GET /api/garages?national=true → Haversine mock/live
     - https://vexogarage.co.uk → Next.js 200
+[12] SSL app.vexogarage.co.uk (main host)                   SUCCESS ✅
+    - DNS A → 87.106.103.43
+    - Cert: /etc/letsencrypt/live/app.vexogarage.co.uk (to 2027-01-02)
+    - https://app.vexogarage.co.uk → HTTP/2 200
+    - Host split: app = main · apex = marketing (both → :3001)
+    - Stripe webhook → https://app.vexogarage.co.uk/api/stripe/webhook
 
 ==============================================================================
 ISOLATION MAP (DO NOT CROSS)
 ==============================================================================
 - shopfooty-traffic.aroleadjo.com  → 127.0.0.1:4001   KEEP LIVE
 - visaguideos / VisaGuide          → :3000            KEEP
-- vexogarage.co.uk                 → 127.0.0.1:3001   Vexo ONLY
+- app.vexogarage.co.uk             → 127.0.0.1:3001   Vexo MAIN
+- vexogarage.co.uk                 → 127.0.0.1:3001   Vexo MARKETING
 - Folders: /var/www/vexo-garage vs /var/www/shopfooty-traffic.aroleadjo.com/api
 
 ==============================================================================
@@ -46,18 +53,21 @@ visaguide-stripe-test   online
 vexo-web                online (:3001)
 
 ==============================================================================
-REMAINING OPTIONAL (not blockers)
+REMAINING OPTIONAL (not blockers) — repo wiring gaps closed 2026-10-04
 ==============================================================================
+- Entrance gate: paste Google OAuth + Twilio (TWILIO_ACCOUNT_SID/AUTH_TOKEN/PHONE)
 - Add www/api DNS + expand Let's Encrypt SANs
-- Stripe / DVLA / DVSA / Twilio keys for full money engine
+- Stripe / DVLA / DVSA keys for full money engine (Twilio helper already wired)
 - Seed real garages (currently mock when table empty)
 - Shopfooty Node20 ws transport warning (non-fatal; service healthy)
 - Prefer shared Supabase schema evolution carefully (Shopfooty + Vexo share project)
+- See docs/inventory/OPEN_GAPS_CLOSED.md
 
 ==============================================================================
 SCORECARD GATE
 ==============================================================================
 READY ✅ — Terminal agent gaps closed. Shopfooty KEEP LIVE. Vexo deployed isolated.
-URL: https://vexogarage.co.uk
-HEALTH: http://127.0.0.1:3001/api/health (VPS) / via nginx domain
+APP: https://app.vexogarage.co.uk
+MARKETING: https://vexogarage.co.uk
+HEALTH: https://app.vexogarage.co.uk/api/health
 SHOPFOOTY: https://shopfooty-traffic.aroleadjo.com/ + :4001/health

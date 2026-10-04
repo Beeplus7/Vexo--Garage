@@ -13,9 +13,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Vexo Garage",
-  description: "Car servicing, bookings, and garage operations — vexogarage.co.uk",
-  metadataBase: new URL("https://vexogarage.co.uk"),
+  title: {
+    default: "Vexo Garage",
+    template: "%s · Vexo Garage",
+  },
+  description:
+    "Your car. Your service. Your choice. — MOT, service bookings, video Shield proof, and Passport history.",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://app.vexogarage.co.uk",
+  ),
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

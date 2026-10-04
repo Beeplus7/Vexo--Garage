@@ -1,14 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { stripe, VEXO_COMMISSION, GARAGE_SHARE } from '@/lib/stripe';
+import { priceIdForService } from '@/lib/stripe-catalog';
+import { sendSms } from '@/lib/twilio';
+import { ensureGarage } from '@/lib/ensure-garage';
+import { createBookingSession } from '@/app/api/stripe/checkout/route';
 
 // POST /api/bookings - Customer Pre-Pays £45 Hold Escrow - Stripe Hold £45 → Split £40.50/£7.50 - Option B You Chose
+// Prefer Checkout Session: pass { checkout: true } or use POST /api/stripe/checkout
 export async function POST(req: NextRequest) {
   try {
-    const { reg, postcode, service = 'MOT', garageId, customerPhone, customerEmail } = await req.json();
+    const body = await req.json();
+    const { reg, postcode, service = 'MOT', garageId, customerPhone, customerEmail, checkout } = body;
 
     if (!reg || !postcode || !garageId) {
       return NextResponse.json({ error: 'reg, postcode, garageId required' }, { status: 400 });
+    }
+
+    if (checkout) {
+      return createBookingSession({
+        reg,
+        postcode,
+        service,
+        garageId,
+        customerPhone,
+        customerEmail,
+      });
     }
 
     const cleanReg = reg.toUpperCase().replace(/\s/g, '');
@@ -29,13 +46,13 @@ export async function POST(req: NextRequest) {
     const commission = service === 'MOT' ? 750 : Math.round(price * 0.10) + 300; // 10% + £3 Shield+Passport
     const garageAmount = price - commission;
 
-    // Get garage stripe_connect_id
-    const garage = await prisma.garage.findUnique({ where: { id: garageId } });
+    const garage = await ensureGarage(garageId);
     if (!garage) return NextResponse.json({ error: 'Garage not found - seed garages table' }, { status: 404 });
 
     // Stripe PaymentIntent Hold £45 escrow - capture_method manual - No money to garage yet - Protected
     let paymentIntent;
     try {
+      const catalogPriceId = priceIdForService(service);
       paymentIntent = await stripe.paymentIntents.create({
         amount: price,
         currency: 'gbp',
@@ -47,6 +64,8 @@ export async function POST(req: NextRequest) {
           service,
           garageAmount: garageAmount.toString(),
           vexoAmount: commission.toString(),
+          stripePriceId: catalogPriceId || '',
+          platform: 'vexo-garage',
         },
         description: `Vexo Garage - ${service} - ${cleanReg} - ${district} - Garage ${garage.name}`,
       });
@@ -98,15 +117,14 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // TODO: Twilio SMS to garage - NEW BOOKING - £0.04 - National - Any postcode UK - Bot market sequencing ensures traffic for that district
-    // await twilioClient.messages.create({
-    //   body: `NEW BOOKING ${cleanReg} ${service} ${postcode} - Accept via dashboard vexogarage.co.uk/garage - Your car. Your service. Your choice.`,
-    //   from: process.env.TWILIO_PHONE_NUMBER,
-    //   to: garage.phone,
-    // });
+    const sms = await sendSms(
+      garage.phone,
+      `NEW BOOKING ${cleanReg} ${service} ${postcode} - Accept via dashboard vexogarage.co.uk/garage/dashboard - Your car. Your service. Your choice.`,
+    );
 
     return NextResponse.json({
       booking,
+      sms,
       paymentIntent: {
         id: paymentIntent.id,
         client_secret: (paymentIntent as any).client_secret,

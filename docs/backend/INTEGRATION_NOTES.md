@@ -14,7 +14,9 @@ Source: `vexo_backend_production_supabase_ready.zip` (copied to `docs/backend/` 
 
 ## Still required for full live money engine
 
-Same as API checklist: Stripe, DVLA, DVSA, Twilio, SendGrid, Supabase anon/service JWT, Redis on VPS, MinIO (or use `video_proofs` Supabase bucket already created).
+Same as API checklist: Stripe, DVLA, DVSA, Twilio, SendGrid keys. Supabase anon/service JWT already saved. Proof upload uses Supabase `video_proofs` (MinIO optional). Twilio helper is wired and no-ops until `TWILIO_*` are pasted. Entrance gate awaits Google OAuth + Twilio.
+
+See `docs/inventory/OPEN_GAPS_CLOSED.md`.
 
 ## Commands
 

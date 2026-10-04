@@ -33,6 +33,9 @@ export async function GET() {
             process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
         ),
         hasStripe: Boolean(process.env.STRIPE_SECRET_KEY),
+        stripeAccountId: process.env.STRIPE_ACCOUNT_ID || null,
+        hasStripeWebhook: Boolean(process.env.STRIPE_WEBHOOK_SECRET),
+        hasStripePublishable: Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY),
         hasRedisUrl: Boolean(process.env.REDIS_URL),
       },
     });

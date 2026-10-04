@@ -1,5 +1,6 @@
 import { Queue, Worker, type JobsOptions } from 'bullmq';
 import { prisma } from '@/lib/prisma';
+import { sendSms } from '@/lib/twilio';
 
 // BullMQ cron reminders:cron daily 02:00 UTC - Query mot_history WHERE expiry = NOW()+30/7/1 days group by district OL8/M1/E1/B1/L1 - JustPark 1900 trick ×10 regions = 19000 extra/mo national
 const connection = { host: 'localhost', port: 6379 };
@@ -64,12 +65,11 @@ export const remindersWorker = new Worker(
         },
       });
 
-      // TODO: Twilio SMS £0.04 + SendGrid free
-      // const message = `Your MOT due ${mot.expiry.toDateString()} - Book now vexogarage.co.uk/${mot.district} - Your car. Your service. Your choice. - Vexo Garage`;
-      // await twilioClient.messages.create({ body: message, from: process.env.TWILIO_PHONE_NUMBER, to: customerPhone });
-      // await sendgrid.send({ to: customerEmail, subject: `MOT due ${mot.expiry.toDateString()}`, html: `Book now <a href="https://vexogarage.co.uk/${mot.district}">vexogarage.co.uk/${mot.district}</a>` });
+      const message = `Your MOT due ${mot.expiry.toDateString()} - Book now vexogarage.co.uk/garages/${mot.district} - Your car. Your service. Your choice. - Vexo Garage`;
+      const customer = await prisma.customer.findFirst({ where: { reg: mot.reg } });
+      await sendSms(customer?.phone, message);
 
-      console.log(`Reminder ${type} for ${mot.reg} district ${mot.district} expiry ${mot.expiry.toDateString()} - Would send SMS + Email`);
+      console.log(`Reminder ${type} for ${mot.reg} district ${mot.district} expiry ${mot.expiry.toDateString()} - SMS helper ready`);
     }
 
     console.log(`Reminders cron done - 30d: ${expiring30.length}, 7d: ${expiring7.length}, 1d: ${expiring1.length} - JustPark 1900 extra/mo per region ×10 regions = 19000 extra/mo national`);

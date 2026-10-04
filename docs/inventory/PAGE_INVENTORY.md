@@ -17,12 +17,12 @@ Total: **38** pages/files (24 frontend + 12 API + 2 cron + infra/shared).
 | 6 | MED | `/garage/signup` | `apps/web/src/app/garage/signup/page.tsx` | Production Ready |
 | 7 | HIGH | `/passport/[reg]` | `apps/web/src/app/passport/[reg]/page.tsx` | Production Ready |
 | 8 | MED | `/widget/[garageSlug]` | `apps/web/src/app/widget/[garageSlug]/page.tsx` | Production Ready |
-| 9 | CORE | `/auth/login` | `apps/web/src/app/auth/login/page.tsx` | Production Ready |
-| 10 | CORE | `/auth/register` | `apps/web/src/app/auth/register/page.tsx` | Production Ready |
-| 11 | HIGH | `/admin` | `apps/web/src/app/admin/page.tsx` | Production Ready |
-| 12 | MED | `/admin/garages` | `apps/web/src/app/admin/garages/page.tsx` | Production Ready |
-| 13 | HIGH | `/admin/keywords` (marketing) | `apps/web/src/app/admin/keywords/page.tsx` | Production Ready — Marketing + Admin |
-| 14 | CORE | `/admin/bookings` | `apps/web/src/app/admin/bookings/page.tsx` | Production Ready |
+| 9 | CORE | `/auth/login` | `apps/web/src/app/auth/login/page.tsx` | Gate stub — awaiting Google + Twilio |
+| 10 | CORE | `/auth/register` | `apps/web/src/app/auth/register/page.tsx` | Gate stub — awaiting Google + Twilio |
+| 11 | HIGH | `/admin` | `apps/web/src/app/admin/page.tsx` | Production Ready — design wired |
+| 12 | MED | `/admin/garages` | `apps/web/src/app/admin/garages/page.tsx` | Production Ready — design wired |
+| 13 | HIGH | `/admin/keywords` (marketing) | `apps/web/src/app/admin/keywords/page.tsx` | Production Ready — design wired |
+| 14 | CORE | `/admin/bookings` | `apps/web/src/app/admin/bookings/page.tsx` | Production Ready — design wired |
 | 15 | MED | `/how-it-works` (marketing) | `apps/web/src/app/how-it-works/page.tsx` | Production Ready — Marketing |
 | 16 | HIGH | `/trust` (marketing) | `apps/web/src/app/trust/page.tsx` | Marketing |
 | 17 | HIGH | `/passport-info` (marketing) | `apps/web/src/app/passport-info/page.tsx` | Marketing |
@@ -67,7 +67,7 @@ Total: **38** pages/files (24 frontend + 12 API + 2 cron + infra/shared).
 | 28 | HIGH | `POST /api/shield/approve` | `apps/web/src/app/api/shield/approve/route.ts` | Production Ready |
 | 29 | MED | `POST /api/passport` | `apps/web/src/app/api/passport/route.ts` | Production Ready |
 | 30 | HIGH | `GET /api/boost/stats?garage_id=1` | `apps/web/src/app/api/boost/stats/route.ts` | Production Ready |
-| 31 | HIGH | `POST /api/keyword/research + GET /api/social/heatmap + GET /api/bot/deployment` | `apps/web/src/app/api/keyword/research/route.ts` | Production Ready |
+| 31 | HIGH | `POST /api/keyword/research + GET /api/social/heatmap + GET /api/bot/deployment` | `keyword/research` + `social/heatmap` + `bot/deployment` | Production Ready |
 | 32 | CORE | `POST /api/stripe/webhook` | `apps/web/src/app/api/stripe/webhook/route.ts` | Production Ready |
 
 ### Notes
