@@ -1,0 +1,226 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Postcode {
+  id        String   @id @default(cuid())
+  postcode  String   @unique
+  district  String // OL8, M1, E1
+  area      String // OL, M, E
+  region    String // North West, London
+  lat       Float
+  lng       Float
+  createdAt DateTime @default(now()) @map("created_at")
+  @@map("postcodes")
+  @@index([district])
+  @@index([area])
+  @@index([region])
+}
+
+model Garage {
+  id                    String   @id @default(cuid())
+  name                  String
+  postcode              String
+  district              String // OL8, M1, E1
+  area                  String
+  region                String
+  lat                   Float
+  lng                   Float
+  phone                 String?
+  email                 String?
+  services              Json     // {MOT:45, Full Service:189, Tesla Service:249, BMW Repair:350, Brakes:120}
+  stripeConnectId       String?  @map("stripe_connect_id")
+  insuranceVerified     Boolean  @default(false) @map("insurance_verified")
+  motLicenseVerified    Boolean  @default(false) @map("mot_license_verified")
+  companiesHouseVerified Boolean @default(false) @map("companies_house_verified")
+  boostActive           Boolean  @default(false) @map("boost_active")
+  postcodeSequenceOrder Int      @default(999) @map("postcode_sequence_order")
+  trafficViews          Int      @default(0) @map("traffic_views")
+  bookingsCount         Int      @default(0) @map("bookings_count")
+  rating                Float    @default(4.8)
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+  bookings              Booking[]
+  @@map("garages")
+  @@index([postcode])
+  @@index([district])
+  @@index([area])
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  phone     String?  @unique
+  email     String?  @unique
+  reg       String? // OL08 4AB
+  postcode  String?
+  district  String?
+  createdAt DateTime @default(now()) @map("created_at")
+  bookings  Booking[]
+  @@map("customers")
+  @@index([reg])
+  @@index([postcode])
+  @@index([district])
+}
+
+model Booking {
+  id                   String    @id @default(cuid())
+  reg                  String // OL08 4AB
+  postcode             String // OL8 4
+  district             String // OL8, M1, E1
+  service              String    // MOT, Full Service, Tesla Service, BMW Repair, Brakes
+  price                Int       // 4500 = £45 in pence
+  status               String    @default("pending") // pending, accepted, completed, disputed, refunded
+  stripePaymentIntentId String?  @unique @map("stripe_payment_intent_id")
+  garageId             String?   @map("garage_id")
+  garage               Garage?   @relation(fields: [garageId], references: [id])
+  customerId           String?   @map("customer_id")
+  customer             Customer? @relation(fields: [customerId], references: [id])
+  videoProofUrl        String?   @map("video_proof_url")
+  motCertUrl           String?   @map("mot_cert_url")
+  passportHash         String?   @map("passport_hash")
+  commission           Int       @default(750) // £7.50 = 450 base +200 Shield +100 Passport in pence
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+  @@map("bookings")
+  @@index([district, status])
+  @@index([reg])
+  @@index([postcode])
+  @@index([district])
+}
+
+model Vehicle {
+  id        String   @id @default(cuid())
+  reg       String   @unique // OL08 4AB
+  make      String?
+  model     String?
+  year      Int?
+  colour    String?
+  fuelType  String?  @map("fuel_type")
+  cachedAt  DateTime @default(now()) @map("cached_at")
+  @@map("vehicles")
+}
+
+model MotHistory {
+  id         String   @id @default(cuid())
+  reg        String // OL08 4AB
+  expiry     DateTime
+  mileage    Int?
+  advisories Json?
+  district   String? // OL8
+  source     String   @default("DVSA") // DVSA FREE
+  createdAt  DateTime @default(now()) @map("created_at")
+  @@map("mot_history")
+  @@index([district, expiry])
+  @@index([reg])
+  @@index([expiry])
+  @@index([district])
+}
+
+model VideoProof {
+  id         String   @id @default(cuid())
+  bookingId  String   @unique @map("booking_id")
+  videoUrl   String   @map("video_url")
+  certUrl    String?  @map("cert_url")
+  aiVerified Boolean  @default(false) @map("ai_verified")
+  createdAt  DateTime @default(now()) @map("created_at")
+  @@map("video_proofs")
+}
+
+model Passport {
+  id          String   @id @default(cuid())
+  reg         String // OL08 4AB
+  district    String?
+  ipfsHash    String?  @map("ipfs_hash")
+  history     Json     // [DVSA MOT + service + video hash]
+  resaleValue Int      @default(30000) @map("resale_value") // £300 in pence
+  createdAt   DateTime @default(now()) @map("created_at")
+  @@map("passports")
+  @@index([reg])
+  @@index([district])
+}
+
+model Commission {
+  id          String   @id @default(cuid())
+  bookingId   String   @unique @map("booking_id")
+  garageAmount Int     @map("garage_amount") // 4050 = £40.50
+  vexoAmount   Int     @map("vexo_amount") // 750 = £7.50
+  status      String   @default("held") // held, captured, refunded
+  stripeTransferId String? @map("stripe_transfer_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  @@map("commissions")
+}
+
+model Reminder {
+  id         String   @id @default(cuid())
+  reg        String
+  district   String?
+  expiry     DateTime
+  type       String   // 30d, 7d, 1d
+  sentAt     DateTime? @map("sent_at")
+  status     String   @default("pending")
+  createdAt  DateTime @default(now()) @map("created_at")
+  @@map("reminders")
+  @@index([reg])
+  @@index([district])
+  @@index([expiry])
+}
+
+model BotMarketSequence {
+  id               String   @id @default(cuid())
+  district         String // OL8, M1, E1
+  area             String?  // OL, M, E
+  region           String?  // North West, London
+  phoneId          Int      @map("phone_id") // 1-20
+  vpnIp            String   @map("vpn_ip") // 185.23.40.13 MAN + 87.106.103.43 LON
+  searchTerm       String   @map("search_term") // Service garage near me M1
+  service          String   // MOT £45, Full Service £189, Tesla Service £249, BMW Repair £350, Brakes £120
+  signalsPerDay    Int      @default(72) @map("signals_per_day")
+  keywordVolume    Int      @default(0) @map("keyword_volume")
+  socialVolume     Int      @default(0) @map("social_volume")
+  totalSellingScore Int     @default(0) @map("total_selling_score")
+  priority         String   @default("med") // high, med, low
+  week             Int      @default(1) // 1,2,3
+  status           String   @default("pending") // pending, active, completed
+  createdAt        DateTime @default(now()) @map("created_at")
+  @@map("bot_market_sequence")
+  @@index([district, week])
+  @@index([totalSellingScore])
+  @@index([district])
+}
+
+model KeywordResearch {
+  id           String   @id @default(cuid())
+  district     String // OL8, M1, E1
+  keyword      String   // Service garage near me, Repair my BMW, Service my Tesla, MOT renewed near me
+  volume       Int      // per month
+  cpc          Float?   // £
+  competition  String?  // High, Med, Low
+  trend        String?  // Rising +20%, Stable, Falling
+  intent       String?  // HIGH, MED
+  createdAt    DateTime @default(now()) @map("created_at")
+  @@map("keyword_research")
+  @@index([district, volume])
+  @@index([district])
+}
+
+model SocialResearch {
+  id           String   @id @default(cuid())
+  district     String
+  service      String   // MOT £45, Full Service £189, Tesla Service £249, BMW Repair £350, Brakes £120
+  marketplaceListings Int @default(0) @map("marketplace_listings")
+  hashtagPosts Int     @default(0) @map("hashtag_posts")
+  tiktokViews  Int     @default(0) @map("tiktok_views")
+  twitterMentions Int  @default(0) @map("twitter_mentions")
+  youtubeViews Int    @default(0) @map("youtube_views")
+  ebayListings Int    @default(0) @map("ebay_listings")
+  totalScore   Int    @default(0) @map("total_score") // keyword + social
+  createdAt    DateTime @default(now()) @map("created_at")
+  @@map("social_research")
+  @@index([district, totalScore])
+  @@index([district])
+}

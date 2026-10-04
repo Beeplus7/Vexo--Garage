@@ -1,0 +1,92 @@
+
+############################################################
+# ISOLATION RULES (this VPS hosts many apps — do not reuse ports)
+# - visaguideos.com / VisaGuide  -> :3000   (KEEP)
+# - shopfooty-traffic            -> :4001   (KEEP LIVE)
+# - vexogarage.co.uk             -> :3001   (Vexo only)
+# - nginx routes by server_name (domain), not by shared folders
+############################################################
+
+############################################################
+# VEXO GARAGE — paste in your Mac Terminal
+# SSL for vexogarage.co.uk is ALREADY LIVE (Let's Encrypt)
+# Expires: 2027-01-02 · auto-renew via certbot
+############################################################
+
+# --- A) SSH in ---
+ssh root@87.106.103.43
+
+# --- B) After login, paste this block to deploy the app ---
+
+set -euo pipefail
+APP_DIR=/var/www/vexo-garage
+REPO=https://github.com/Beeplus7/Vexo--Garage.git
+
+# Node 20 if missing
+if ! command -v node >/dev/null 2>&1; then
+  curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+  apt-get install -y nodejs
+fi
+
+mkdir -p /var/www
+if [ -d "$APP_DIR/.git" ]; then
+  cd "$APP_DIR" && git fetch --all && git reset --hard origin/main
+else
+  rm -rf "$APP_DIR"
+  git clone "$REPO" "$APP_DIR"
+fi
+cd "$APP_DIR"
+
+# IMPORTANT: put real secrets here (from your local .env.local)
+nano "$APP_DIR/.env"
+# required at minimum:
+# DATABASE_URL=...
+# SUPABASE_URL=https://vdtyzqzdakfckpcjxxpi.supabase.co
+# SUPABASE_ANON_KEY=eyJ...
+# SUPABASE_SERVICE_ROLE_KEY=eyJ...
+# NEXT_PUBLIC_SUPABASE_URL=https://vdtyzqzdakfckpcjxxpi.supabase.co
+# NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=...
+# NEXT_PUBLIC_SITE_URL=https://vexogarage.co.uk
+# NODE_ENV=production
+# PORT=3001
+
+cp "$APP_DIR/.env" "$APP_DIR/apps/web/.env.local"
+chmod 600 "$APP_DIR/.env" "$APP_DIR/apps/web/.env.local"
+
+npm install
+npm run db:generate
+npm run build:web
+
+# Run Vexo on 3001 (port 3000 already used on this VPS)
+cat > /etc/systemd/system/vexo-web.service <<'EOF'
+[Unit]
+Description=Vexo Garage Next.js
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/vexo-garage/apps/web
+EnvironmentFile=/var/www/vexo-garage/.env
+Environment=PORT=3001
+ExecStart=/usr/bin/npm run start -- --hostname 127.0.0.1 --port 3001
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Point nginx SSL site at Vexo :3001
+sed -i 's#proxy_pass http://127.0.0.1:3000;#proxy_pass http://127.0.0.1:3001;#' /etc/nginx/sites-available/vexo-garage
+nginx -t && systemctl reload nginx
+
+systemctl daemon-reload
+systemctl enable vexo-web
+systemctl restart vexo-web
+systemctl status vexo-web --no-pager -l | head -25
+
+curl -I https://vexogarage.co.uk
+echo DONE
+
+# --- C) Optional: add www + api to the cert later ---
+# certbot --nginx -d vexogarage.co.uk -d www.vexogarage.co.uk -d api.vexogarage.co.uk --expand

@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "Vexo Garage",
+    "slug": "vexo-garage",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "uk.co.vexogarage.app"
+    },
+    "android": {
+      "package": "uk.co.vexogarage.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0B1F2A",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "appName": "Vexo Garage",
+      "siteUrl": "https://vexogarage.co.uk"
+    }
+  }
+}
