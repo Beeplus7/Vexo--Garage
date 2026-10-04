@@ -1,0 +1,63 @@
+VEXO VPS DEPLOY SCORECARD — TERMINAL AGENT UPDATE
+VPS 87.106.103.43 — Ubuntu 24.04.5 LTS — Kernel 6.8.0-146-generic — Docker 29.8.2 — Node 20.20.2 — PM2 7.0.4 — Nginx 1.24.0
+Date closed: 2026-10-04
+
+==============================================================================
+PHASE RESULTS
+==============================================================================
+
+[1] VPS OS upgrade 24.04.4 → 24.04.5 + kernel 6.8.0-146     SUCCESS ✅
+[2] Docker + Node + PM2 + Nginx present                     SUCCESS ✅
+[3] GitHub Beeplus7/Vexo--Garage empty → PUSH from Mac      SUCCESS ✅
+    - main @ b828fdc (work env + Next 16 params fix)
+[4] VPS clone empty → pull full monorepo /var/www/vexo-garage SUCCESS ✅
+[5] pm2 delete all killed Shopfooty :4001                   FIXED ✅
+    - Restored: shopfooty-traffic:4001 ONLINE
+    - Health: {"ok":true,"port":4001,"supabase":{"db":"ok"}}
+    - Public: https://shopfooty-traffic.aroleadjo.com/ SSL ACTIVE KEEP LIVE
+[6] VisaGuide restored on PM2 (visaguide-stripe-test)       SUCCESS ✅
+[7] Broken vexo-web on :3000 (empty repo)                   FIXED ✅
+    - Vexo now PM2 name vexo-web on :3001 ONLY (not 3000/4001)
+[8] Next build fail (async params accept route)             FIXED ✅
+    - Commit b828fdc pushed + rebuilt on VPS
+[9] VPS IPv6-only direct db.*:5432 unreachable              FIXED ✅
+    - DATABASE_URL → aws-0-eu-west-1.pooler.supabase.com:6543
+    - ?pgbouncer=true for Prisma
+[10] Nginx + SSL vexogarage.co.uk → proxy :3001             SUCCESS ✅
+[11] Live API checks                                        SUCCESS ✅
+    - GET /api/health → ok:true database connected
+    - GET /api/postcode?postcode=OL8 4AB → cached OL8
+    - GET /api/garages?national=true → Haversine mock/live
+    - https://vexogarage.co.uk → Next.js 200
+
+==============================================================================
+ISOLATION MAP (DO NOT CROSS)
+==============================================================================
+- shopfooty-traffic.aroleadjo.com  → 127.0.0.1:4001   KEEP LIVE
+- visaguideos / VisaGuide          → :3000            KEEP
+- vexogarage.co.uk                 → 127.0.0.1:3001   Vexo ONLY
+- Folders: /var/www/vexo-garage vs /var/www/shopfooty-traffic.aroleadjo.com/api
+
+==============================================================================
+PM2 FINAL (saved)
+==============================================================================
+shopfooty-traffic:4001  online
+visaguide-stripe-test   online
+vexo-web                online (:3001)
+
+==============================================================================
+REMAINING OPTIONAL (not blockers)
+==============================================================================
+- Add www/api DNS + expand Let's Encrypt SANs
+- Stripe / DVLA / DVSA / Twilio keys for full money engine
+- Seed real garages (currently mock when table empty)
+- Shopfooty Node20 ws transport warning (non-fatal; service healthy)
+- Prefer shared Supabase schema evolution carefully (Shopfooty + Vexo share project)
+
+==============================================================================
+SCORECARD GATE
+==============================================================================
+READY ✅ — Terminal agent gaps closed. Shopfooty KEEP LIVE. Vexo deployed isolated.
+URL: https://vexogarage.co.uk
+HEALTH: http://127.0.0.1:3001/api/health (VPS) / via nginx domain
+SHOPFOOTY: https://shopfooty-traffic.aroleadjo.com/ + :4001/health
