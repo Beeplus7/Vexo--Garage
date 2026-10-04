@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { needsOnboarding } from "@/lib/onboarding";
 import { getSupabasePublishableKey, getSupabaseUrl } from "@/lib/supabase/env";
 
 export async function middleware(request: NextRequest) {
@@ -26,8 +27,22 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  // Refresh session cookies for App Router
-  await supabase.auth.getUser();
+  const { data } = await supabase.auth.getUser();
+  const path = request.nextUrl.pathname;
+
+  const authPaths =
+    path.startsWith("/auth/") ||
+    path === "/onboarding" ||
+    path.startsWith("/api/") ||
+    path.startsWith("/design/");
+
+  if (data.user && needsOnboarding(data.user) && !authPaths) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/onboarding";
+    redirectUrl.search = "";
+    return NextResponse.redirect(redirectUrl);
+  }
+
   return response;
 }
 

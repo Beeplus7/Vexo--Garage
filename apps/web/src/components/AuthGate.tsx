@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { getBrowserAuthOrigin } from "@/lib/auth-origin";
 import { createClient } from "@/lib/supabase/browser";
@@ -11,8 +12,12 @@ type AuthGateProps = {
 };
 
 export function AuthGate({ mode, error }: AuthGateProps) {
-  const [busy, setBusy] = useState<"google" | "phone" | null>(null);
+  const router = useRouter();
+  const [busy, setBusy] = useState<"google" | "email" | "phone" | null>(null);
   const [localError, setLocalError] = useState<string | null>(error || null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
   const twilioReady = useMemo(
     () => process.env.NEXT_PUBLIC_TWILIO_READY === "1",
     [],
@@ -27,7 +32,7 @@ export function AuthGate({ mode, error }: AuthGateProps) {
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${origin}/auth/callback?next=/`,
+          redirectTo: `${origin}/auth/callback?next=/onboarding`,
           queryParams: {
             access_type: "offline",
             prompt: "select_account",
@@ -44,6 +49,54 @@ export function AuthGate({ mode, error }: AuthGateProps) {
     }
   }
 
+  async function continueWithEmail(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy("email");
+    setLocalError(null);
+    const origin = getBrowserAuthOrigin();
+    const supabase = createClient();
+
+    try {
+      if (mode === "register") {
+        const { data, error: signUpError } = await supabase.auth.signUp({
+          email: email.trim(),
+          password,
+          options: {
+            emailRedirectTo: `${origin}/auth/confirm?next=/onboarding`,
+            data: {
+              full_name: fullName.trim() || undefined,
+              role: "customer",
+              onboarding_complete: false,
+            },
+          },
+        });
+        if (signUpError) throw signUpError;
+
+        // If email confirmations are on, session is null until link clicked
+        if (!data.session) {
+          router.push(
+            `/auth/check-email?email=${encodeURIComponent(email.trim())}`,
+          );
+          return;
+        }
+        router.push("/onboarding");
+        router.refresh();
+        return;
+      }
+
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+      if (signInError) throw signInError;
+      router.push("/onboarding");
+      router.refresh();
+    } catch (err) {
+      setLocalError(err instanceof Error ? err.message : "Auth failed");
+      setBusy(null);
+    }
+  }
+
   return (
     <main className="mx-auto flex min-h-[100dvh] w-full max-w-md flex-col justify-center px-6 py-16">
       <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#FF6B00]">
@@ -54,8 +107,8 @@ export function AuthGate({ mode, error }: AuthGateProps) {
       </h1>
       <p className="mt-2 text-sm leading-6 text-[#4A2C14]/80">
         {mode === "login"
-          ? "Sign in with Google. Phone / Twilio wires in when credentials land."
-          : "Customer + garage onboarding. Google works now; phone Magic Link next."}
+          ? "Google or email. New email accounts must confirm the link we send."
+          : "Sign up with Google or email. We’ll email a confirmation link, then onboarding."}
       </p>
 
       {localError ? (
@@ -79,10 +132,54 @@ export function AuthGate({ mode, error }: AuthGateProps) {
               : "Sign up with Google"}
         </button>
 
+        <div className="relative py-2 text-center text-xs font-semibold uppercase tracking-wider text-[#4A2C14]/50">
+          or email
+        </div>
+
+        <form onSubmit={continueWithEmail} className="space-y-3">
+          {mode === "register" ? (
+            <input
+              required
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="Full name"
+              className="h-12 w-full rounded-md border border-[#E7D5C5] bg-white px-3 text-sm"
+            />
+          ) : null}
+          <input
+            required
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@email.com"
+            className="h-12 w-full rounded-md border border-[#E7D5C5] bg-white px-3 text-sm"
+          />
+          <input
+            required
+            type="password"
+            minLength={8}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password (min 8 chars)"
+            className="h-12 w-full rounded-md border border-[#E7D5C5] bg-white px-3 text-sm"
+          />
+          <button
+            type="submit"
+            disabled={busy === "email"}
+            className="flex h-12 w-full items-center justify-center rounded-md bg-[#FF6B00] text-sm font-bold text-white disabled:opacity-60"
+          >
+            {busy === "email"
+              ? "Please wait…"
+              : mode === "login"
+                ? "Log in with email"
+                : "Sign up — send confirmation email"}
+          </button>
+        </form>
+
         <button
           type="button"
           disabled
-          className="flex h-12 w-full items-center justify-center rounded-md bg-[#FF6B00] text-sm font-bold text-white opacity-60"
+          className="flex h-12 w-full items-center justify-center rounded-md border border-[#E7D5C5] text-sm font-bold text-[#4A2C14] opacity-60"
           title="Awaiting Twilio credentials"
         >
           {twilioReady
