@@ -36,6 +36,12 @@ export async function GET() {
         stripeAccountId: process.env.STRIPE_ACCOUNT_ID || null,
         hasStripeWebhook: Boolean(process.env.STRIPE_WEBHOOK_SECRET),
         hasStripePublishable: Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY),
+        hasGoogleClient: Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET),
+        hasTwilio: Boolean(
+          process.env.TWILIO_ACCOUNT_SID &&
+            process.env.TWILIO_AUTH_TOKEN &&
+            process.env.TWILIO_PHONE_NUMBER,
+        ),
         hasRedisUrl: Boolean(process.env.REDIS_URL),
       },
     });

@@ -6,12 +6,12 @@ export function getSupabaseUrl() {
   );
 }
 
-/** Browser / publishable key (Auth OK; PostgREST may require secret/anon JWT). */
+/** Browser key — prefer anon JWT for Auth/OAuth; publishable as fallback. */
 export function getSupabasePublishableKey() {
   return (
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
     process.env.SUPABASE_ANON_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
     ""
   );
 }
