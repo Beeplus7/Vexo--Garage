@@ -63,8 +63,8 @@
       if (list.length >= 2) {
         parent.classList.add("vexo-stagger");
         list.forEach(function (card, idx) {
-          var dir = idx % 3 === 0 ? "top" : idx % 3 === 1 ? "left" : "right";
-          markReveal(card, dir, idx * 90);
+          var dir = idx % 2 === 0 ? "top" : "scale";
+          markReveal(card, dir, idx * 70);
         });
       } else if (list.length === 1) {
         markReveal(list[0], "scale");
@@ -80,8 +80,7 @@
     qs(body, "section, article, footer, main > div").forEach(function (el, i) {
       if (isTiny(el)) return;
       if (el.querySelector(".vexo-reveal")) return;
-      var dir = i % 2 === 0 ? "top" : "scale";
-      markReveal(el, dir);
+      markReveal(el, i % 2 === 0 ? "top" : "scale");
     });
 
     wireAccordions(doc);

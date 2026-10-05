@@ -33,14 +33,14 @@ export function DesignEmbed({ src, title }: DesignEmbedProps) {
           const link = doc.createElement("link");
           link.id = "vexo-enhance-css";
           link.rel = "stylesheet";
-          link.href = "/design/vexo-enhance.css";
+          link.href = "/design/vexo-enhance.css?v=4";
           doc.head.appendChild(link);
         }
 
         if (!doc.getElementById("vexo-enhance-js")) {
           const script = doc.createElement("script");
           script.id = "vexo-enhance-js";
-          script.src = `/design/vexo-enhance.js?v=3`;
+          script.src = `/design/vexo-enhance.js?v=4`;
           script.defer = true;
           doc.body.appendChild(script);
         }
