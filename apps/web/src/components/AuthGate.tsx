@@ -18,6 +18,9 @@ export function AuthGate({ mode, error }: AuthGateProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [code, setCode] = useState("");
+  const [phoneStep, setPhoneStep] = useState<"idle" | "code">("idle");
   const twilioReady = useMemo(
     () => process.env.NEXT_PUBLIC_TWILIO_READY === "1",
     [],
@@ -72,7 +75,6 @@ export function AuthGate({ mode, error }: AuthGateProps) {
         });
         if (signUpError) throw signUpError;
 
-        // If email confirmations are on, session is null until link clicked
         if (!data.session) {
           router.push(
             `/auth/check-email?email=${encodeURIComponent(email.trim())}`,
@@ -97,18 +99,58 @@ export function AuthGate({ mode, error }: AuthGateProps) {
     }
   }
 
+  async function sendPhoneCode() {
+    setBusy("phone");
+    setLocalError(null);
+    try {
+      const res = await fetch("/api/auth/phone/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone }),
+      });
+      const data = (await res.json()) as { error?: string; phone?: string };
+      if (!res.ok) throw new Error(data.error || "Could not send code");
+      if (data.phone) setPhone(data.phone);
+      setPhoneStep("code");
+    } catch (err) {
+      setLocalError(err instanceof Error ? err.message : "SMS failed");
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function verifyPhoneCode(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy("phone");
+    setLocalError(null);
+    try {
+      const res = await fetch("/api/auth/phone/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone, code }),
+      });
+      const data = (await res.json()) as { error?: string; next?: string };
+      if (!res.ok) throw new Error(data.error || "Invalid code");
+      router.push(data.next || "/onboarding");
+      router.refresh();
+    } catch (err) {
+      setLocalError(err instanceof Error ? err.message : "Verify failed");
+      setBusy(null);
+    }
+  }
+
   return (
     <main className="mx-auto flex min-h-[100dvh] w-full max-w-md flex-col justify-center px-6 py-16">
-      <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#FF6B00]">
+      <p className="text-xs font-bold tracking-[0.12em] text-[#FF6B00]">
         Entrance gate
       </p>
-      <h1 className="mt-3 text-3xl font-extrabold text-[#4A2C14]">
+      <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-[#4A2C14]">
         {mode === "login" ? "Log in" : "Create account"}
       </h1>
-      <p className="mt-2 text-sm leading-6 text-[#4A2C14]/80">
+      <p className="mt-2 text-sm leading-6 tracking-wide text-[#4A2C14]/80">
         {mode === "login"
-          ? "Google or email. New email accounts must confirm the link we send."
-          : "Sign up with Google or email. We’ll email a confirmation link, then onboarding."}
+          ? "Google, email, or phone. New email accounts confirm via link."
+          : "Sign up with Google, email, or phone. Email sign-ups get a confirmation link."}
       </p>
 
       {localError ? (
@@ -132,7 +174,7 @@ export function AuthGate({ mode, error }: AuthGateProps) {
               : "Sign up with Google"}
         </button>
 
-        <div className="relative py-2 text-center text-xs font-semibold uppercase tracking-wider text-[#4A2C14]/50">
+        <div className="relative py-2 text-center text-xs font-semibold tracking-wide text-[#4A2C14]/50">
           or email
         </div>
 
@@ -143,7 +185,7 @@ export function AuthGate({ mode, error }: AuthGateProps) {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="Full name"
-              className="h-12 w-full rounded-md border border-[#E7D5C5] bg-white px-3 text-sm"
+              className="h-12 w-full rounded-md border border-[#E7D5C5] bg-white px-3 text-sm tracking-wide"
             />
           ) : null}
           <input
@@ -152,7 +194,7 @@ export function AuthGate({ mode, error }: AuthGateProps) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@email.com"
-            className="h-12 w-full rounded-md border border-[#E7D5C5] bg-white px-3 text-sm"
+            className="h-12 w-full rounded-md border border-[#E7D5C5] bg-white px-3 text-sm tracking-wide"
           />
           <input
             required
@@ -161,7 +203,7 @@ export function AuthGate({ mode, error }: AuthGateProps) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password (min 8 chars)"
-            className="h-12 w-full rounded-md border border-[#E7D5C5] bg-white px-3 text-sm"
+            className="h-12 w-full rounded-md border border-[#E7D5C5] bg-white px-3 text-sm tracking-wide"
           />
           <button
             type="submit"
@@ -176,19 +218,78 @@ export function AuthGate({ mode, error }: AuthGateProps) {
           </button>
         </form>
 
-        <button
-          type="button"
-          disabled
-          className="flex h-12 w-full items-center justify-center rounded-md border border-[#E7D5C5] text-sm font-bold text-[#4A2C14] opacity-60"
-          title="Awaiting Twilio credentials"
-        >
-          {twilioReady
-            ? "Continue with phone"
-            : "Continue with phone / Twilio (awaiting credentials)"}
-        </button>
+        <div className="relative py-2 text-center text-xs font-semibold tracking-wide text-[#4A2C14]/50">
+          or phone
+        </div>
+
+        {twilioReady ? (
+          phoneStep === "idle" ? (
+            <div className="space-y-3">
+              <input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="07… or +44…"
+                inputMode="tel"
+                className="h-12 w-full rounded-md border border-[#E7D5C5] bg-white px-3 text-sm tracking-wide"
+              />
+              <button
+                type="button"
+                onClick={sendPhoneCode}
+                disabled={busy === "phone" || !phone.trim()}
+                className="flex h-12 w-full items-center justify-center rounded-md border border-[#E7D5C5] text-sm font-bold text-[#4A2C14] hover:border-[#FF6B00] disabled:opacity-60"
+              >
+                {busy === "phone" ? "Sending code…" : "Continue with phone"}
+              </button>
+              <p className="text-[11px] leading-4 text-[#4A2C14]/55">
+                Trial Twilio: destination numbers may need verifying in the Twilio
+                console first.
+              </p>
+            </div>
+          ) : (
+            <form onSubmit={verifyPhoneCode} className="space-y-3">
+              <p className="text-xs text-[#4A2C14]/70">
+                Code sent to <span className="font-semibold">{phone}</span>
+              </p>
+              <input
+                required
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                placeholder="6-digit code"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                className="h-12 w-full rounded-md border border-[#E7D5C5] bg-white px-3 text-sm tracking-wide"
+              />
+              <button
+                type="submit"
+                disabled={busy === "phone"}
+                className="flex h-12 w-full items-center justify-center rounded-md bg-[#FF6B00] text-sm font-bold text-white disabled:opacity-60"
+              >
+                {busy === "phone" ? "Checking…" : "Verify & continue"}
+              </button>
+              <button
+                type="button"
+                className="text-xs font-semibold text-[#4A2C14]/60"
+                onClick={() => {
+                  setPhoneStep("idle");
+                  setCode("");
+                }}
+              >
+                Use a different number
+              </button>
+            </form>
+          )
+        ) : (
+          <button
+            type="button"
+            disabled
+            className="flex h-12 w-full items-center justify-center rounded-md border border-[#E7D5C5] text-sm font-bold text-[#4A2C14] opacity-60"
+          >
+            Continue with phone (Twilio not ready)
+          </button>
+        )}
       </div>
 
-      <p className="mt-6 text-sm">
+      <p className="mt-6 text-sm tracking-wide">
         {mode === "login" ? (
           <>
             No account?{" "}
@@ -209,12 +310,15 @@ export function AuthGate({ mode, error }: AuthGateProps) {
       {mode === "register" ? (
         <Link
           href="/garage/signup"
-          className="mt-4 text-sm font-semibold text-[#4A2C14]/70"
+          className="mt-4 text-sm font-semibold tracking-wide text-[#4A2C14]/70"
         >
           Garage signup instead →
         </Link>
       ) : (
-        <Link href="/" className="mt-8 text-sm font-semibold text-[#4A2C14]/70">
+        <Link
+          href="/"
+          className="mt-8 text-sm font-semibold tracking-wide text-[#4A2C14]/70"
+        >
           ← Back home
         </Link>
       )}

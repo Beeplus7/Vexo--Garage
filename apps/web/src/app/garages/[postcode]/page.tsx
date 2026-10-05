@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 import { DesignEmbed } from "@/components/DesignEmbed";
+import { designSrc } from "@/lib/design-catalog";
 
 export const metadata: Metadata = {
-  title: 'Garages by postcode',
+  title: "Garages by postcode",
 };
 
-type Props = { params: Promise<Record<string, string>> };
-
-export default async function Page({ params }: Props) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<Record<string, string>>;
+}) {
   await params;
-  return <DesignEmbed src='/design/pages/15.html' title='Garages by postcode' />;
+  return <DesignEmbed src={designSrc(15)} title="Garages by postcode" />;
 }

@@ -59,6 +59,15 @@ const MOCK_SEED: Record<
   },
 };
 
+/** Seed all demo OL8 garages used by production user journeys. */
+export async function ensureDemoGarages() {
+  const results = [];
+  for (const id of Object.keys(MOCK_SEED)) {
+    results.push(await ensureGarage(id));
+  }
+  return results.filter(Boolean);
+}
+
 /** Resolve garage; seed mock OL8 garages when checkout hits demo ids. */
 export async function ensureGarage(garageId: string) {
   const existing = await prisma.garage.findUnique({ where: { id: garageId } });

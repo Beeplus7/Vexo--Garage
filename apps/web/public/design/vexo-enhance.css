@@ -1,0 +1,164 @@
+/* Vexo Garage — scroll reveal / typography for design pages 01–38 */
+
+html {
+  scroll-behavior: smooth;
+  font-size: 108%;
+}
+
+body {
+  letter-spacing: 0.028em !important;
+  word-spacing: 0.08em !important;
+  line-height: 1.6 !important;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Bump cramped Tailwind arbitrary sizes from design exports */
+[class*="text-[8px]"] { font-size: 12px !important; letter-spacing: 0.03em !important; }
+[class*="text-[9px]"] { font-size: 12.5px !important; letter-spacing: 0.03em !important; }
+[class*="text-[10px]"] { font-size: 13.5px !important; letter-spacing: 0.03em !important; }
+[class*="text-[11px]"] { font-size: 14.5px !important; letter-spacing: 0.03em !important; }
+[class*="text-[12px]"] { font-size: 15.5px !important; letter-spacing: 0.025em !important; }
+[class*="text-[13px]"] { font-size: 16px !important; letter-spacing: 0.025em !important; }
+[class*="text-[14px]"] { font-size: 17px !important; letter-spacing: 0.02em !important; }
+[class*="text-[15px]"] { font-size: 18px !important; }
+[class*="text-[16px]"] { font-size: 18.5px !important; }
+[class*="text-[18px]"] { font-size: 20px !important; letter-spacing: 0.015em !important; }
+[class*="text-[20px]"] { font-size: 22px !important; letter-spacing: 0.01em !important; }
+[class*="text-[22px]"] { font-size: 24px !important; }
+[class*="text-[24px]"] { font-size: 27px !important; letter-spacing: 0.01em !important; }
+[class*="text-[26px]"] { font-size: 29px !important; }
+[class*="text-[28px]"] { font-size: 32px !important; letter-spacing: 0.005em !important; }
+[class*="text-[30px]"] { font-size: 34px !important; }
+[class*="text-[32px]"] { font-size: 36px !important; }
+[class*="text-[36px]"] { font-size: 40px !important; letter-spacing: 0 !important; }
+[class*="text-[40px]"] { font-size: 44px !important; }
+[class*="text-[44px]"] { font-size: 48px !important; }
+[class*="text-[48px]"] { font-size: 52px !important; }
+[class*="text-[52px]"] { font-size: 56px !important; }
+[class*="text-[56px]"] { font-size: 60px !important; }
+[class*="text-[60px]"] { font-size: 64px !important; }
+[class*="text-[64px]"] { font-size: 68px !important; }
+[class*="text-[72px]"] { font-size: 76px !important; }
+
+/* Soften shouty / cramped tracking */
+.uppercase,
+[class*="uppercase"] {
+  text-transform: none !important;
+  letter-spacing: 0.05em !important;
+}
+[class*="tracking-[-0.04"],
+[class*="tracking-[-0.03"],
+[class*="tracking-[-0.02"],
+[class*="tracking-[-0.01"] {
+  letter-spacing: 0.01em !important;
+}
+[class*="tracking-[0.1"],
+[class*="tracking-[0.12"],
+[class*="tracking-[0.14"],
+[class*="tracking-[0.16"],
+[class*="tracking-[0.2"] {
+  letter-spacing: 0.06em !important;
+}
+[class*="leading-[0."],
+[class*="leading-[1."] {
+  line-height: 1.35 !important;
+}
+
+/* ——— Reveal on scroll (AOS) ——— */
+.vexo-reveal {
+  opacity: 0;
+  transform: translate3d(0, 40px, 0);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--vexo-delay, 0ms);
+  will-change: opacity, transform;
+}
+.vexo-reveal[data-vexo-dir="top"] {
+  transform: translate3d(0, -48px, 0);
+}
+.vexo-reveal[data-vexo-dir="left"] {
+  transform: translate3d(-48px, 0, 0);
+}
+.vexo-reveal[data-vexo-dir="right"] {
+  transform: translate3d(48px, 0, 0);
+}
+.vexo-reveal[data-vexo-dir="scale"] {
+  transform: translate3d(0, 24px, 0) scale(0.96);
+}
+.vexo-reveal.is-inview {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+/* Stagger waterfall helpers */
+.vexo-stagger > .vexo-reveal:nth-child(1) { --vexo-delay: 0ms; }
+.vexo-stagger > .vexo-reveal:nth-child(2) { --vexo-delay: 90ms; }
+.vexo-stagger > .vexo-reveal:nth-child(3) { --vexo-delay: 180ms; }
+.vexo-stagger > .vexo-reveal:nth-child(4) { --vexo-delay: 270ms; }
+.vexo-stagger > .vexo-reveal:nth-child(5) { --vexo-delay: 360ms; }
+.vexo-stagger > .vexo-reveal:nth-child(6) { --vexo-delay: 450ms; }
+.vexo-stagger > .vexo-reveal:nth-child(7) { --vexo-delay: 540ms; }
+.vexo-stagger > .vexo-reveal:nth-child(8) { --vexo-delay: 630ms; }
+.vexo-stagger > .vexo-reveal:nth-child(n+9) { --vexo-delay: 700ms; }
+
+/* Accordion / drop-down */
+.vexo-acc-item {
+  border-radius: 14px;
+  overflow: hidden;
+}
+.vexo-acc-trigger {
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  user-select: none;
+}
+.vexo-acc-trigger::after {
+  content: "+";
+  font-weight: 800;
+  font-size: 1.25em;
+  color: #ff6b00;
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+}
+.vexo-acc-item.is-open .vexo-acc-trigger::after {
+  content: "−";
+  transform: rotate(180deg);
+}
+.vexo-acc-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.vexo-acc-item.is-open .vexo-acc-panel {
+  grid-template-rows: 1fr;
+}
+.vexo-acc-panel > .vexo-acc-panel-inner {
+  overflow: hidden;
+  opacity: 0.85;
+}
+.vexo-acc-item.is-open .vexo-acc-panel > .vexo-acc-panel-inner {
+  opacity: 1;
+}
+
+button, a[role="button"], [role="button"] {
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+button:hover, a[role="button"]:hover, [role="button"]:hover {
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vexo-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .vexo-acc-panel { transition: none !important; }
+}

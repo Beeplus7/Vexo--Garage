@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { DesignEmbed } from "@/components/DesignEmbed";
+import { designSrc } from "@/lib/design-catalog";
 import { SessionConfirm } from "./session-confirm";
 
 export const metadata: Metadata = {
@@ -15,7 +16,7 @@ export default async function Page({
   const { session_id: sessionId } = await searchParams;
 
   if (!sessionId) {
-    return <DesignEmbed src="/design/pages/28.html" title="Booking success" />;
+    return <DesignEmbed src={designSrc(28)} title="Booking success" />;
   }
 
   return (

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { DesignEmbed } from "@/components/DesignEmbed";
+import { designSrc } from "@/lib/design-catalog";
 
 export const metadata: Metadata = {
-  title: 'Passport info',
+  title: "Passport info",
 };
 
 export default function Page() {
-  return <DesignEmbed src='/design/pages/05.html' title='Passport info' />;
+  return <DesignEmbed src={designSrc(5)} title="Passport info" />;
 }

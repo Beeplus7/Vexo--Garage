@@ -1,15 +1,27 @@
 import type { MetadataRoute } from "next";
+import { APP_URL, MARKETING_URL } from "@/lib/site-urls";
 
 export default function robots(): MetadataRoute.Robots {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "https://vexogarage.co.uk";
   return {
     rules: [
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin/", "/api/", "/dev/", "/garage/dashboard", "/auth/"],
+        disallow: [
+          "/admin/",
+          "/api/",
+          "/dev/",
+          "/design",
+          "/design/",
+          "/onboarding",
+          "/garage/dashboard",
+          "/auth/",
+          "/booking/",
+          "/sitemap-preview",
+        ],
       },
     ],
-    sitemap: `${base}/sitemap.xml`,
+    sitemap: [`${MARKETING_URL}/sitemap.xml`, `${APP_URL}/sitemap.xml`],
+    host: MARKETING_URL.replace(/^https?:\/\//, ""),
   };
 }

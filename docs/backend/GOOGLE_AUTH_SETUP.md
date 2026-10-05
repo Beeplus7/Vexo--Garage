@@ -8,24 +8,16 @@
 - Test user: `olabamiji.kolabalogun@gmail.com`
 - Keys in `credentials/.env.google` + VPS `.env`
 
-## You must enable Google inside Supabase (one-time)
+## Supabase Google provider
 
-1. Open [Supabase → Authentication → Providers → Google](https://supabase.com/dashboard/project/vdtyzqzdakfckpcjxxpi/auth/providers)
-2. **Enable** Google
-3. Paste:
-   - **Client ID** = `GOOGLE_CLIENT_ID` from `credentials/.env.google`
-   - **Client Secret** = `GOOGLE_CLIENT_SECRET`
-4. Save
+**Enabled via Management API (2026-10-05):**
 
-## Supabase URL config
+- `external_google_enabled = true`
+- Client ID/secret from `credentials/.env.google`
+- Site URL: `https://app.vexogarage.co.uk`
+- Redirect allow list includes app / apex / `localhost:3001` callbacks
 
-[Authentication → URL Configuration](https://supabase.com/dashboard/project/vdtyzqzdakfckpcjxxpi/auth/url-configuration)
-
-- **Site URL:** `https://app.vexogarage.co.uk`
-- **Redirect URLs** (add all):
-  - `https://app.vexogarage.co.uk/auth/callback`
-  - `https://vexogarage.co.uk/auth/callback`
-  - `http://localhost:3001/auth/callback`
+Dashboard (if you need to re-check): [Auth → Providers → Google](https://supabase.com/dashboard/project/vdtyzqzdakfckpcjxxpi/auth/providers)
 
 ## App routes
 

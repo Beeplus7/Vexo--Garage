@@ -21,3 +21,74 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
+
+/* Welcome onboarding wizard — flip + float */
+@keyframes vexo-flip-in-next {
+  0% {
+    opacity: 0;
+    transform: rotateY(72deg) translateX(28px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: rotateY(0deg) translateX(0) scale(1);
+  }
+}
+@keyframes vexo-flip-in-back {
+  0% {
+    opacity: 0;
+    transform: rotateY(-72deg) translateX(-28px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: rotateY(0deg) translateX(0) scale(1);
+  }
+}
+@keyframes vexo-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+@keyframes vexo-pulse-ring {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.55;
+  }
+  70% {
+    transform: scale(1.08);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.vexo-flip-stage {
+  perspective: 1400px;
+}
+.vexo-flip-card {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+.vexo-flip-card.is-next {
+  animation: vexo-flip-in-next 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.vexo-flip-card.is-back {
+  animation: vexo-flip-in-back 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.vexo-float {
+  animation: vexo-float 3.2s ease-in-out infinite;
+}
+.vexo-pulse-ring {
+  animation: vexo-pulse-ring 2.4s ease-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .vexo-flip-card.is-next,
+  .vexo-flip-card.is-back,
+  .vexo-float,
+  .vexo-pulse-ring {
+    animation: none !important;
+  }
+}

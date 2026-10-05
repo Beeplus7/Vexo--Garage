@@ -194,200 +194,250 @@
   ],
   "routes": [
     {
-      "n": 38,
+      "n": 1,
       "route": "/",
       "file": "page.tsx",
-      "title": "Home",
-      "design": 38
+      "title": "Hero marketing (apex) / App home (app)",
+      "design": "1|38",
+      "host": "split"
     },
     {
       "n": 2,
       "route": "/garages",
       "file": "garages/page.tsx",
       "title": "Garages",
-      "design": 2
+      "design": 2,
+      "host": "app"
     },
     {
       "n": 15,
       "route": "/garages/[postcode]",
       "file": "garages/[postcode]/page.tsx",
       "title": "Garages by postcode",
-      "design": 15
+      "design": 15,
+      "host": "app"
     },
     {
       "n": 16,
       "route": "/garage/[slug]",
       "file": "garage/[slug]/page.tsx",
       "title": "Garage detail",
-      "design": 16
+      "design": 16,
+      "host": "app"
     },
     {
       "n": 11,
       "route": "/garage",
       "file": "garage/page.tsx",
       "title": "For garages",
-      "design": 11
+      "design": 11,
+      "host": "both"
     },
     {
       "n": 32,
       "route": "/garage/signup",
       "file": "garage/signup/page.tsx",
       "title": "Garage signup",
-      "design": 32
+      "design": 32,
+      "host": "app"
     },
     {
       "n": 33,
       "route": "/garage/dashboard",
       "file": "garage/dashboard/page.tsx",
       "title": "Garage dashboard",
-      "design": 33
+      "design": 33,
+      "host": "app"
     },
     {
       "n": 29,
       "route": "/booking/[id]",
       "file": "booking/[id]/page.tsx",
       "title": "Booking detail",
-      "design": 29
+      "design": 29,
+      "host": "app"
     },
     {
       "n": 28,
       "route": "/booking/success",
       "file": "booking/success/page.tsx",
       "title": "Booking success",
-      "design": 28
+      "design": 28,
+      "host": "app"
     },
     {
       "n": 30,
       "route": "/passport/[reg]",
       "file": "passport/[reg]/page.tsx",
       "title": "Passport",
-      "design": 30
+      "design": 30,
+      "host": "app"
     },
     {
       "n": 5,
       "route": "/passport-info",
       "file": "passport-info/page.tsx",
       "title": "Passport info",
-      "design": 5
+      "design": 5,
+      "host": "both"
     },
     {
       "n": 31,
       "route": "/widget/[garageSlug]",
       "file": "widget/[garageSlug]/page.tsx",
       "title": "Embed widget",
-      "design": 31
+      "design": 31,
+      "host": "app"
     },
     {
       "n": 8,
       "route": "/how-it-works",
       "file": "how-it-works/page.tsx",
       "title": "How it works",
-      "design": 8
+      "design": 8,
+      "host": "marketing"
     },
     {
       "n": 9,
       "route": "/trust",
       "file": "trust/page.tsx",
       "title": "Trust & safety",
-      "design": 9
+      "design": 9,
+      "host": "marketing"
     },
     {
       "n": 10,
       "route": "/pricing",
       "file": "pricing/page.tsx",
       "title": "Pricing",
-      "design": 10
+      "design": 10,
+      "host": "both"
     },
     {
       "n": 25,
       "route": "/contact",
       "file": "contact/page.tsx",
       "title": "Contact",
-      "design": 25
+      "design": 25,
+      "host": "marketing"
     },
     {
       "n": 26,
       "route": "/reviews",
       "file": "reviews/page.tsx",
       "title": "Reviews",
-      "design": 26
+      "design": 26,
+      "host": "marketing"
     },
     {
       "n": 27,
       "route": "/services",
       "file": "services/page.tsx",
       "title": "Services",
-      "design": 27
+      "design": 27,
+      "host": "marketing"
     },
     {
       "n": 23,
       "route": "/terms",
       "file": "terms/page.tsx",
       "title": "Terms",
-      "design": 23
+      "design": 23,
+      "host": "both"
     },
     {
       "n": 24,
       "route": "/privacy",
       "file": "privacy/page.tsx",
       "title": "Privacy",
-      "design": 24
+      "design": 24,
+      "host": "both"
     },
     {
       "n": 35,
       "route": "/legal",
       "file": "legal/page.tsx",
       "title": "Terms & privacy",
-      "design": 35
+      "design": 35,
+      "host": "both"
+    },
+    {
+      "n": 11,
+      "route": "/boost",
+      "file": "boost/page.tsx",
+      "title": "Boost",
+      "design": 11,
+      "host": "both"
     },
     {
       "n": 34,
       "route": "/admin",
       "file": "admin/page.tsx",
       "title": "Admin",
-      "design": 34
+      "design": 34,
+      "host": "app"
     },
     {
       "n": 21,
       "route": "/admin/dashboard",
       "file": "admin/dashboard/page.tsx",
       "title": "Admin dashboard",
-      "design": 21
+      "design": 21,
+      "host": "app"
     },
     {
       "n": 34,
       "route": "/admin/garages",
       "file": "admin/garages/page.tsx",
       "title": "Admin garages",
-      "design": 34
+      "design": 34,
+      "host": "app"
     },
     {
       "n": 21,
       "route": "/admin/keywords",
       "file": "admin/keywords/page.tsx",
       "title": "Admin keywords",
-      "design": 21
+      "design": 21,
+      "host": "app"
     },
     {
       "n": 34,
       "route": "/admin/bookings",
       "file": "admin/bookings/page.tsx",
       "title": "Admin bookings",
-      "design": 34
+      "design": 34,
+      "host": "app"
     },
     {
       "n": 36,
       "route": "/sitemap-preview",
       "file": "sitemap-preview/page.tsx",
       "title": "Sitemap preview",
-      "design": 36
+      "design": 36,
+      "host": "both"
     },
     {
       "n": 37,
       "route": "/dev/api-routes",
       "file": "dev/api-routes/page.tsx",
       "title": "API routes map",
-      "design": 37
+      "design": 37,
+      "host": "app"
+    },
+    {
+      "n": 0,
+      "route": "/design",
+      "file": "design/page.tsx",
+      "title": "Design index 01\u201338",
+      "design": null
+    },
+    {
+      "n": 0,
+      "route": "/design/[n]",
+      "file": "design/[n]/page.tsx",
+      "title": "Design archive viewer",
+      "design": "1-38"
     },
     {
       "n": 0,
@@ -404,13 +454,6 @@
       "title": "Register",
       "design": null,
       "gate": true
-    },
-    {
-      "n": 0,
-      "route": "/boost",
-      "file": "boost/page.tsx",
-      "title": "Boost",
-      "design": 11
     }
   ],
   "brand": {
@@ -419,5 +462,24 @@
     "cream": "#FFF4EC",
     "green": "#0A7A3E",
     "tagline": "Your car. Your service. Your choice."
+  },
+  "hostSplit": {
+    "marketing": "vexogarage.co.uk",
+    "app": "app.vexogarage.co.uk",
+    "heroDesign": 1,
+    "appHomeDesign": 38,
+    "superseded": [
+      3,
+      4,
+      6,
+      7,
+      12,
+      13,
+      14,
+      17,
+      19,
+      20,
+      22
+    ]
   }
 }
