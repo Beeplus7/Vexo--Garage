@@ -1,86 +1,94 @@
 import { NextResponse } from "next/server";
+import {
+  fetchCompanyProfile,
+  hasCompaniesHouseKey,
+  searchCompaniesHouse,
+} from "@/lib/companies-house";
 
-const BASE = "https://api.company-information.service.gov.uk";
-
-/** GET /api/companies-house?number=12345678 — verify company number */
+/**
+ * GET /api/companies-house
+ * - ?number=12345678 — Company Profile API (verify)
+ * - ?q=SERVICE+APARTMENT+LONDON — Search API
+ * - ?q=...&active=1 — filter active only (profile enrich)
+ */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const number = (searchParams.get("number") || "").replace(/\s/g, "");
   const q = (searchParams.get("q") || "").trim();
+  const activeOnly = searchParams.get("active") === "1";
 
-  const key = process.env.COMPANIES_HOUSE_API_KEY;
-  if (!key) {
+  if (!hasCompaniesHouseKey()) {
     return NextResponse.json(
       { error: "COMPANIES_HOUSE_API_KEY not configured", verified: false },
       { status: 503 },
     );
   }
 
-  const auth =
-    "Basic " + Buffer.from(`${key}:`, "utf8").toString("base64");
-
   try {
     if (number) {
-      const res = await fetch(`${BASE}/company/${encodeURIComponent(number)}`, {
-        headers: { Authorization: auth },
-        next: { revalidate: 3600 },
-      });
-      if (res.status === 404) {
+      const data = await fetchCompanyProfile(number);
+      if (!data) {
         return NextResponse.json({
           verified: false,
           number,
           error: "Company not found",
         });
       }
-      if (!res.ok) {
-        return NextResponse.json(
-          { verified: false, error: `Companies House ${res.status}` },
-          { status: 502 },
-        );
-      }
-      const data = (await res.json()) as {
-        company_number?: string;
-        company_name?: string;
-        company_status?: string;
-        registered_office_address?: { postal_code?: string; locality?: string };
-      };
       return NextResponse.json({
         verified: true,
         number: data.company_number || number,
         name: data.company_name,
         status: data.company_status,
+        type: data.company_type,
+        date_of_creation: data.date_of_creation,
+        has_been_liquidated: data.has_been_liquidated || false,
         postcode: data.registered_office_address?.postal_code || null,
         locality: data.registered_office_address?.locality || null,
-        source: "Companies House",
+        source: "Companies House Profile API",
       });
     }
 
     if (q) {
-      const res = await fetch(
-        `${BASE}/search/companies?q=${encodeURIComponent(q)}&items_per_page=5`,
-        { headers: { Authorization: auth } },
-      );
-      if (!res.ok) {
-        return NextResponse.json(
-          { error: `Companies House search ${res.status}` },
-          { status: 502 },
-        );
+      const search = await searchCompaniesHouse(q, 20);
+      if (!search.ok) {
+        return NextResponse.json({ error: search.error }, { status: 502 });
       }
-      const data = (await res.json()) as {
-        items?: Array<{
-          company_number?: string;
-          title?: string;
-          company_status?: string;
-        }>;
-      };
+      let results = search.items.map((i) => ({
+        number: i.company_number,
+        name: i.title,
+        status: i.company_status,
+        type: i.company_type,
+        address_snippet: i.address_snippet,
+        postcode: i.address?.postal_code || null,
+        locality: i.address?.locality || null,
+        date_of_creation: i.date_of_creation || null,
+      }));
+
+      if (activeOnly) {
+        const filtered = [];
+        for (const r of results.slice(0, 15)) {
+          if (!r.number) continue;
+          const profile = await fetchCompanyProfile(r.number);
+          const status = (profile?.company_status || r.status || "").toLowerCase();
+          if (status !== "active") continue;
+          filtered.push({
+            ...r,
+            name: profile?.company_name || r.name,
+            status: profile?.company_status || r.status,
+            date_of_creation: profile?.date_of_creation || r.date_of_creation,
+            postcode: profile?.registered_office_address?.postal_code || r.postcode,
+            locality: profile?.registered_office_address?.locality || r.locality,
+            enriched: Boolean(profile),
+          });
+        }
+        results = filtered;
+      }
+
       return NextResponse.json({
         ok: true,
-        results: (data.items || []).map((i) => ({
-          number: i.company_number,
-          name: i.title,
-          status: i.company_status,
-        })),
-        source: "Companies House",
+        results,
+        total: search.total,
+        source: "Companies House Search API",
       });
     }
 
