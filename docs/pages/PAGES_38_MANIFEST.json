@@ -3,8 +3,9 @@
   "copied": [
     {
       "n": 1,
-      "source": "vexo_x5f_garage_x5f_hero_x5f_landing_x5f_page_x5f_1_x5f_of_x5f_38.html",
-      "public": "/design/pages/01.html"
+      "source": "vexo_x5f_garage_x5f_hero_x5f_landing_x5f_production_x5f_live_x5f_today.html",
+      "public": "/design/pages/01.html",
+      "note": "production live today hero (replaces page 1 of 38 draft)"
     },
     {
       "n": 2,
