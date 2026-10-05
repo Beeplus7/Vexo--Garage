@@ -38,30 +38,17 @@ export async function GET(req: NextRequest) {
     }
   } catch {}
 
-  // Query garages - National if national=true else nearby districts
-  let garages;
-  if (national) {
-    // National - query by district OL8 or nearby districts for Week1 OL+M+BL+SK
-    const districtsWeek1 = ['OL8', 'OL1', 'M1', 'BL1', 'SK1', 'BB1', 'PR1'];
-    const districtsWeek2 = ['B1', 'L1', 'WA1', 'WN1', 'FY1', 'M3'];
-    const districtsWeek3 = ['E1', 'NW1', 'SE1', 'SW1', 'EC1', 'W1'];
-    const allDistricts = [...districtsWeek1, ...districtsWeek2, ...districtsWeek3];
-    
-    garages = await prisma.garage.findMany({
-      where: {
-        district: { in: allDistricts },
-      },
-      orderBy: { bookingsCount: 'desc' },
-      take: 20,
-    });
-  } else {
-    garages = await prisma.garage.findMany({
-      where: { district },
-      take: 10,
-    });
+  // Prefer nearby by district, then expand to all garages sorted by Haversine
+  let garages = await prisma.garage.findMany({
+    where: national ? undefined : { district },
+    take: national ? 100 : 30,
+  });
+
+  if (garages.length === 0) {
+    garages = await prisma.garage.findMany({ take: 50 });
   }
 
-  // If no garages in DB yet, return mock 3 garages Oldham example - A1 Motors £45, Autocentre £49, Kwik Fit £55
+  // If no garages in DB yet, return mock 3 garages Oldham example
   if (garages.length === 0) {
     const mockGarages = [
       { id: '1', name: 'A1 Motors Oldham', postcode: 'OL8 4AB', district: 'OL8', area: 'OL', region: 'North West', lat: 53.544, lng: -2.116, distance: 0.3, services: { MOT: 45, 'Full Service': 189, 'Tesla Service': 249, 'BMW Repair': 350, Brakes: 120 }, rating: 4.9, bookingsCount: 124, trafficViews: 340, boostActive: true },
@@ -84,8 +71,11 @@ export async function GET(req: NextRequest) {
     ...g,
     distance: Number(haversine(lat, lng, g.lat, g.lng).toFixed(1)),
     servicePrice: (g.services as any)[service] || 45,
-  })).sort((a,b) => a.distance - b.distance).filter(g => g.distance <= 10);
+  })).sort((a,b) => a.distance - b.distance);
 
-  await redis.setex(cacheKey, CACHE_TTL.garages, JSON.stringify(withDistance));
-  return NextResponse.json({ garages: withDistance, district, area, region, lat, lng, source: 'Supabase Postgres national' });
+  const nearby = withDistance.filter(g => g.distance <= 15);
+  const result = nearby.length ? nearby : withDistance.slice(0, 20);
+
+  await redis.setex(cacheKey, CACHE_TTL.garages, JSON.stringify(result));
+  return NextResponse.json({ garages: result, district, area, region, lat, lng, source: 'Supabase Postgres national' });
 }

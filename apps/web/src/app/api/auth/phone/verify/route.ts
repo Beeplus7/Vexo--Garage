@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { postAuthPath } from "@/lib/garage-auth";
 import { toE164 } from "@/lib/phone";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
@@ -93,5 +94,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: otpError.message }, { status: 500 });
   }
 
-  return NextResponse.json({ ok: true, next: "/onboarding", userId });
+  const { data: sessionUser } = await supabase.auth.getUser();
+  return NextResponse.json({
+    ok: true,
+    next: postAuthPath(sessionUser.user),
+    userId,
+  });
 }

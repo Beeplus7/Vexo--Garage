@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { getBrowserAuthOrigin } from "@/lib/auth-origin";
+import { postAuthPath } from "@/lib/garage-auth";
 import { createClient } from "@/lib/supabase/browser";
 
 type AuthGateProps = {
@@ -11,10 +12,26 @@ type AuthGateProps = {
   error?: string;
 };
 
+function friendlyAuthError(raw?: string | null): string | null {
+  if (!raw) return null;
+  if (
+    raw === "email_confirmed_login" ||
+    /PKCE|code verifier/i.test(raw)
+  ) {
+    return "Your email is confirmed. Log in with your password on this device (open the confirm link in the same browser you signed up in, or just log in here).";
+  }
+  if (raw === "missing_code" || raw === "invalid_confirm_link") {
+    return "That confirmation link is invalid or expired. Log in with your password, or request a new link.";
+  }
+  return raw;
+}
+
 export function AuthGate({ mode, error }: AuthGateProps) {
   const router = useRouter();
   const [busy, setBusy] = useState<"google" | "email" | "phone" | null>(null);
-  const [localError, setLocalError] = useState<string | null>(error || null);
+  const [localError, setLocalError] = useState<string | null>(
+    friendlyAuthError(error),
+  );
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -81,7 +98,7 @@ export function AuthGate({ mode, error }: AuthGateProps) {
           );
           return;
         }
-        router.push("/onboarding");
+        router.push(postAuthPath(data.user));
         router.refresh();
         return;
       }
@@ -91,7 +108,8 @@ export function AuthGate({ mode, error }: AuthGateProps) {
         password,
       });
       if (signInError) throw signInError;
-      router.push("/onboarding");
+      const { data: userData } = await supabase.auth.getUser();
+      router.push(postAuthPath(userData.user));
       router.refresh();
     } catch (err) {
       setLocalError(err instanceof Error ? err.message : "Auth failed");
@@ -149,8 +167,8 @@ export function AuthGate({ mode, error }: AuthGateProps) {
       </h1>
       <p className="mt-2 text-sm leading-6 tracking-wide text-[#4A2C14]/80">
         {mode === "login"
-          ? "Google, email, or phone. New email accounts confirm via link."
-          : "Sign up with Google, email, or phone. Email sign-ups get a confirmation link."}
+          ? "Google, email, or phone. Open the confirmation link in the same browser you used to sign up."
+          : "Sign up with Google, email, or phone. Open the email confirmation link in this same browser."}
       </p>
 
       {localError ? (

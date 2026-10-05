@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { OnboardingWizard } from "@/components/OnboardingWizard";
+import { postAuthPath } from "@/lib/garage-auth";
 import { needsOnboarding } from "@/lib/onboarding";
 import { createClient } from "@/lib/supabase/server";
 
@@ -13,7 +14,7 @@ export default async function OnboardingPage() {
     redirect("/auth/login?next=/onboarding");
   }
   if (!needsOnboarding(data.user)) {
-    redirect("/garages");
+    redirect(postAuthPath(data.user));
   }
 
   return (

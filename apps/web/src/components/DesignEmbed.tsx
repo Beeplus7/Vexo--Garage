@@ -6,6 +6,8 @@ import { APP_CTA_PATHS, resolveCtaPath } from "@/lib/design-bridge";
 type DesignEmbedProps = {
   src: string;
   title: string;
+  /** Replace demo copy inside the design HTML (e.g. A1 Motors → live garage name). */
+  textReplacements?: [string, string][];
 };
 
 const APP =
@@ -17,7 +19,11 @@ const MARKETING =
  * Full-bleed design HTML with AOS scroll-reveal, stagger, accordion,
  * typography fixes, and CTA navigation bridge.
  */
-export function DesignEmbed({ src, title }: DesignEmbedProps) {
+export function DesignEmbed({
+  src,
+  title,
+  textReplacements,
+}: DesignEmbedProps) {
   const ref = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
@@ -33,14 +39,14 @@ export function DesignEmbed({ src, title }: DesignEmbedProps) {
           const link = doc.createElement("link");
           link.id = "vexo-enhance-css";
           link.rel = "stylesheet";
-          link.href = "/design/vexo-enhance.css?v=4";
+          link.href = "/design/vexo-enhance.css?v=5";
           doc.head.appendChild(link);
         }
 
         if (!doc.getElementById("vexo-enhance-js")) {
           const script = doc.createElement("script");
           script.id = "vexo-enhance-js";
-          script.src = `/design/vexo-enhance.js?v=4`;
+          script.src = `/design/vexo-enhance.js?v=5`;
           script.defer = true;
           doc.body.appendChild(script);
         }
@@ -101,6 +107,9 @@ export function DesignEmbed({ src, title }: DesignEmbedProps) {
         }
 
         softenShoutingLabels(doc);
+        if (textReplacements?.length) {
+          applyTextReplacements(doc, textReplacements);
+        }
       } catch {
         // same-origin only
       }
@@ -109,17 +118,20 @@ export function DesignEmbed({ src, title }: DesignEmbedProps) {
     iframe.addEventListener("load", enhance);
     if (iframe.contentDocument?.readyState === "complete") enhance();
     return () => iframe.removeEventListener("load", enhance);
-  }, [src]);
+  }, [src, textReplacements]);
 
   return (
-    <iframe
-      ref={ref}
-      src={src}
-      title={title}
-      className="h-[100dvh] w-full border-0 bg-white"
-      allow="clipboard-write"
-      loading="eager"
-    />
+    <div className="h-[100dvh] w-full max-w-[100vw] overflow-x-hidden overscroll-x-none">
+      <iframe
+        ref={ref}
+        src={src}
+        title={title}
+        className="block h-full w-full max-w-full border-0 bg-white"
+        allow="clipboard-write"
+        loading="eager"
+        style={{ overflow: "auto", WebkitOverflowScrolling: "touch" }}
+      />
+    </div>
   );
 }
 
@@ -181,4 +193,23 @@ function toTitle(s: string): string {
     .replace(/\bMot\b/g, "MOT")
     .replace(/\bUk\b/g, "UK")
     .replace(/\bApi\b/g, "API");
+}
+
+function applyTextReplacements(doc: Document, pairs: [string, string][]) {
+  const walk = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
+  const nodes: Text[] = [];
+  let node = walk.nextNode();
+  while (node) {
+    nodes.push(node as Text);
+    node = walk.nextNode();
+  }
+  for (const textNode of nodes) {
+    let value = textNode.nodeValue;
+    if (!value) continue;
+    for (const [from, to] of pairs) {
+      if (!from || !to || from === to) continue;
+      if (value.includes(from)) value = value.split(from).join(to);
+    }
+    textNode.nodeValue = value;
+  }
 }

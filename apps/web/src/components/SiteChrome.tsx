@@ -58,7 +58,7 @@ export function SiteChrome({
           </nav>
           <a
             href={ctaHref}
-            className="inline-flex h-9 items-center rounded-md bg-[#FF6B00] px-3 text-sm font-bold text-white"
+            className="inline-flex h-9 items-center rounded-lg bg-[#FF6B00] px-3 text-sm font-bold text-white"
           >
             Get started
           </a>

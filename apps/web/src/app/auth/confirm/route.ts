@@ -1,6 +1,7 @@
 import { type EmailOtpType } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { getAuthOrigin } from "@/lib/auth-origin";
+import { postAuthPath } from "@/lib/garage-auth";
 import { createClient } from "@/lib/supabase/server";
 
 /**
@@ -19,10 +20,22 @@ export async function GET(request: Request) {
     const supabase = await createClient();
     const { error } = await supabase.auth.verifyOtp({ token_hash, type });
     if (!error) {
-      return NextResponse.redirect(`${origin}${safeNext}`);
+      const { data } = await supabase.auth.getUser();
+      const dest =
+        data.user &&
+        (safeNext === "/onboarding" ||
+          safeNext === "/" ||
+          safeNext === "/garages")
+          ? postAuthPath(data.user)
+          : safeNext;
+      return NextResponse.redirect(`${origin}${dest}`);
     }
+    const msg = error.message || "";
+    const friendly = /PKCE|code verifier/i.test(msg)
+      ? "email_confirmed_login"
+      : msg;
     return NextResponse.redirect(
-      `${origin}/auth/login?error=${encodeURIComponent(error.message)}`,
+      `${origin}/auth/login?error=${encodeURIComponent(friendly)}`,
     );
   }
 

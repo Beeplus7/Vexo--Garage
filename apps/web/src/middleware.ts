@@ -5,6 +5,7 @@ import {
   isAppOnlyPath,
   isMarketingHost,
 } from "@/lib/design-catalog";
+import { needsGarageSignup, postAuthPath } from "@/lib/garage-auth";
 import { needsOnboarding } from "@/lib/onboarding";
 import {
   isAdminAllowed,
@@ -78,18 +79,33 @@ export async function middleware(request: NextRequest) {
   const authPaths =
     path.startsWith("/auth/") ||
     path === "/onboarding" ||
+    path.startsWith("/garage/") ||
+    path === "/garage/manage" ||
     path.startsWith("/api/");
 
-  if (
-    isAppHost(host) &&
-    data.user &&
-    needsOnboarding(data.user) &&
-    !authPaths
-  ) {
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/onboarding";
-    redirectUrl.search = "";
-    return NextResponse.redirect(redirectUrl);
+  if (isAppHost(host) && data.user && !authPaths) {
+    if (needsOnboarding(data.user)) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = "/onboarding";
+      redirectUrl.search = "";
+      return NextResponse.redirect(redirectUrl);
+    }
+    if (needsGarageSignup(data.user)) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = "/garage/signup";
+      redirectUrl.search = "";
+      return NextResponse.redirect(redirectUrl);
+    }
+    // App root for garage owners → dashboard (not customer finder)
+    if (path === "/" && data.user.user_metadata?.role === "garage") {
+      const dest = postAuthPath(data.user);
+      if (dest !== path) {
+        const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = dest;
+        redirectUrl.search = "";
+        return NextResponse.redirect(redirectUrl);
+      }
+    }
   }
 
   return response;

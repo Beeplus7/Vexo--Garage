@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { AuthGate } from "@/components/AuthGate";
-import { needsOnboarding } from "@/lib/onboarding";
+import { postAuthPath } from "@/lib/garage-auth";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Login" };
@@ -16,7 +16,7 @@ export default async function LoginPage({
     const supabase = await createClient();
     const { data } = await supabase.auth.getUser();
     if (data.user) {
-      redirect(needsOnboarding(data.user) ? "/onboarding" : "/garages");
+      redirect(postAuthPath(data.user));
     }
   } catch {
     // Missing key in some envs — still show gate

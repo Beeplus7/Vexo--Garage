@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { DesignEmbed } from "@/components/DesignEmbed";
-import { designSrc } from "@/lib/design-catalog";
+import { BookingDetail } from "@/components/BookingDetail";
 
 export const metadata: Metadata = {
   title: "Booking detail",
@@ -9,8 +8,8 @@ export const metadata: Metadata = {
 export default async function Page({
   params,
 }: {
-  params: Promise<Record<string, string>>;
+  params: Promise<{ id: string }>;
 }) {
-  await params;
-  return <DesignEmbed src={designSrc(29)} title="Booking detail" />;
+  const { id } = await params;
+  return <BookingDetail bookingId={id} />;
 }

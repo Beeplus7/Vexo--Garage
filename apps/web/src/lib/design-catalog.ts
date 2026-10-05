@@ -23,7 +23,9 @@ export const DESIGN_ROUTES: DesignRoute[] = [
   { n: 16, route: "/garage/[slug]", title: "Garage detail", design: 16, host: "app", dynamic: true },
   { n: 11, route: "/garage", title: "For garages", design: 11, host: "both" },
   { n: 32, route: "/garage/signup", title: "Garage signup", design: 32, host: "app" },
-  { n: 33, route: "/garage/dashboard", title: "Garage dashboard", design: 33, host: "app" },
+  // Page 20 = original garage dashboard; 33 is a later draft
+  { n: 20, route: "/garage/dashboard", title: "Garage dashboard", design: 20, host: "app" },
+  { n: 33, route: "/design/33", title: "Garage dashboard (draft 33)", design: 33, host: "app" },
   { n: 29, route: "/booking/[id]", title: "Booking detail", design: 29, host: "app", dynamic: true },
   { n: 28, route: "/booking/success", title: "Booking success", design: 28, host: "app" },
   { n: 30, route: "/passport/[reg]", title: "Passport", design: 30, host: "app", dynamic: true },
@@ -49,10 +51,13 @@ export const DESIGN_ROUTES: DesignRoute[] = [
 ];
 
 /** Superseded drafts still viewable at /design/[n] */
-export const SUPERSEDED_DESIGNS = [3, 4, 6, 7, 12, 13, 14, 17, 19, 20, 22] as const;
+export const SUPERSEDED_DESIGNS = [3, 4, 6, 7, 12, 13, 14, 17, 19, 22, 33] as const;
+
+/** Bump when design HTML files are mass-synced so iframes skip stale cache. */
+export const DESIGN_ASSET_VERSION = "sync38-20261005";
 
 export function designSrc(n: number): string {
-  return `/design/pages/${String(n).padStart(2, "0")}.html`;
+  return `/design/pages/${String(n).padStart(2, "0")}.html?v=${DESIGN_ASSET_VERSION}`;
 }
 
 export function isMarketingHost(host: string): boolean {
@@ -73,6 +78,7 @@ export const APP_ONLY_PREFIXES = [
   "/booking",
   "/admin",
   "/garage/dashboard",
+  "/garage/manage",
   "/garage/signup",
   "/passport/",
   "/widget",

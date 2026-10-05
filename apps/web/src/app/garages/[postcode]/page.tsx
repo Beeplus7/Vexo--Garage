@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { DesignEmbed } from "@/components/DesignEmbed";
-import { designSrc } from "@/lib/design-catalog";
+import { GarageFinder } from "@/components/GarageFinder";
 
 export const metadata: Metadata = {
   title: "Garages by postcode",
@@ -9,8 +8,11 @@ export const metadata: Metadata = {
 export default async function Page({
   params,
 }: {
-  params: Promise<Record<string, string>>;
+  params: Promise<{ postcode: string }>;
 }) {
-  await params;
-  return <DesignEmbed src={designSrc(15)} title="Garages by postcode" />;
+  const { postcode } = await params;
+  const decoded = decodeURIComponent(postcode || "OL8 4");
+  return (
+    <GarageFinder initialPostcode={decoded} initialService="MOT" />
+  );
 }

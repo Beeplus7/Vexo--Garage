@@ -52,3 +52,9 @@ apps/mobile/android/.gradle/
 .turbo/
 .vercel/
 .cache/
+
+# Local design HTML backups (pre-sync)
+.design-backups/
+
+# Supabase CLI temp
+supabase/.temp/

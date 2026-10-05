@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { DesignEmbed } from "@/components/DesignEmbed";
-import { designSrc } from "@/lib/design-catalog";
+import { GarageFinder } from "@/components/GarageFinder";
 
 export const metadata: Metadata = {
   title: "Garages",
+  description: "Find MOT and service garages near you — exact quote, Stripe hold.",
 };
 
 export default function Page() {
-  return <DesignEmbed src={designSrc(2)} title="Garages" />;
+  return <GarageFinder initialPostcode="OL8 4" initialService="MOT" />;
 }

@@ -217,17 +217,92 @@
     trigger.addEventListener("click", toggle, true);
   }
 
+  function ensureViewport(doc) {
+    var head = doc.head;
+    if (!head) return;
+    var meta = head.querySelector('meta[name="viewport"]');
+    var content =
+      "width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5";
+    if (!meta) {
+      meta = doc.createElement("meta");
+      meta.name = "viewport";
+      head.prepend(meta);
+    }
+    meta.setAttribute("content", content);
+  }
+
+  /** Clamp elements that paint wider than the phone viewport. */
+  function containOverflow(doc) {
+    var win = doc.defaultView;
+    if (!win || win.innerWidth > 768) return;
+    var vw = win.innerWidth;
+    var nodes = qs(doc, "body *");
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      if (!el.getBoundingClientRect) continue;
+      var tag = el.tagName;
+      if (tag === "SCRIPT" || tag === "STYLE" || tag === "LINK" || tag === "BR") {
+        continue;
+      }
+      var rect = el.getBoundingClientRect();
+      if (rect.width <= vw + 1) continue;
+      var style = win.getComputedStyle(el);
+      if (style.position === "fixed" || style.position === "sticky") {
+        el.style.maxWidth = "calc(100vw - 1rem)";
+        el.style.boxSizing = "border-box";
+        if (rect.right > vw - 4) {
+          el.style.right = "0.5rem";
+        }
+        if (rect.left < 4) {
+          el.style.left = "0.5rem";
+        }
+      } else {
+        el.style.maxWidth = "100%";
+        el.style.minWidth = "0";
+        if (style.overflowX === "visible") {
+          el.style.overflowX = "auto";
+        }
+      }
+    }
+    doc.documentElement.style.overflowX = "hidden";
+    doc.body.style.overflowX = "hidden";
+  }
+
   function boot(doc) {
+    ensureViewport(doc);
     tagDocument(doc);
+    containOverflow(doc);
 
     // React artifacts remount — re-tag lightly
     var mo = new MutationObserver(function () {
       if (doc.__vexoTagTimer) clearTimeout(doc.__vexoTagTimer);
       doc.__vexoTagTimer = setTimeout(function () {
         tagDocument(doc);
-      }, 120);
+        containOverflow(doc);
+      }, 160);
     });
     mo.observe(doc.body, { childList: true, subtree: true });
+
+    var win = doc.defaultView;
+    if (win && !doc.__vexoResizeBound) {
+      doc.__vexoResizeBound = true;
+      win.addEventListener(
+        "resize",
+        function () {
+          containOverflow(doc);
+        },
+        { passive: true },
+      );
+      win.addEventListener(
+        "orientationchange",
+        function () {
+          setTimeout(function () {
+            containOverflow(doc);
+          }, 200);
+        },
+        { passive: true },
+      );
+    }
   }
 
   function start() {

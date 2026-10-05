@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
 
     const link = await stripe.accountLinks.create({
       account: accountId,
-      refresh_url: `${site}/garage/signup?connect=refresh`,
+      refresh_url: `${site}/garage/dashboard?connect=refresh`,
       return_url: `${site}/garage/dashboard?connect=done`,
       type: "account_onboarding",
     });
