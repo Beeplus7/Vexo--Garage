@@ -198,16 +198,24 @@
       "n": 1,
       "route": "/",
       "file": "page.tsx",
-      "title": "Hero marketing (apex) / App home (app)",
-      "design": "1|38",
+      "title": "Hero marketing (apex); app / redirects to /garages",
+      "design": 1,
       "host": "split"
     },
     {
       "n": 2,
       "route": "/garages",
       "file": "garages/page.tsx",
-      "title": "Garages",
+      "title": "App home / Garages finder",
       "design": 2,
+      "host": "app"
+    },
+    {
+      "n": 38,
+      "route": "/dev/final-map",
+      "file": "dev/final-map/page.tsx",
+      "title": "Internal 38-of-38 checklist (not user home)",
+      "design": 38,
       "host": "app"
     },
     {
