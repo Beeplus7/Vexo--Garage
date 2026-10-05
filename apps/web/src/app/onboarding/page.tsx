@@ -13,7 +13,7 @@ export default async function OnboardingPage() {
     redirect("/auth/login?next=/onboarding");
   }
   if (!needsOnboarding(data.user)) {
-    redirect("/");
+    redirect("/garages");
   }
 
   return (

@@ -468,7 +468,7 @@
     "marketing": "vexogarage.co.uk",
     "app": "app.vexogarage.co.uk",
     "heroDesign": 1,
-    "appHomeDesign": 38,
+    "appHomeDesign": 2,
     "superseded": [
       3,
       4,
@@ -482,6 +482,9 @@
       20,
       22
     ],
-    "heroSource": "vexo_x5f_garage_x5f_hero_x5f_landing_x5f_production_x5f_live_x5f_today.html"
+    "heroSource": "vexo_x5f_garage_x5f_hero_x5f_landing_x5f_production_x5f_live_x5f_today.html",
+    "appHome": "/garages",
+    "finalMapDesign": 38,
+    "note": "Design 38 is internal checklist only \u2014 never user home after login"
   }
 }

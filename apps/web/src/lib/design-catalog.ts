@@ -16,8 +16,9 @@ export type DesignRoute = {
 /** Canonical live routes (hero → 38). */
 export const DESIGN_ROUTES: DesignRoute[] = [
   { n: 1, route: "/", title: "Hero marketing", design: 1, host: "marketing" },
-  { n: 38, route: "/", title: "App home / finder", design: 38, host: "app" },
-  { n: 2, route: "/garages", title: "Garages list", design: 2, host: "app" },
+  { n: 2, route: "/garages", title: "App home / garages finder", design: 2, host: "app" },
+  // Design 38 is the internal "38 of 38 FINAL" checklist/sitemap — not a user home
+  { n: 38, route: "/dev/final-map", title: "Final site map (internal)", design: 38, host: "app" },
   { n: 15, route: "/garages/[postcode]", title: "Garages by postcode", design: 15, host: "app", dynamic: true },
   { n: 16, route: "/garage/[slug]", title: "Garage detail", design: 16, host: "app", dynamic: true },
   { n: 11, route: "/garage", title: "For garages", design: 11, host: "both" },

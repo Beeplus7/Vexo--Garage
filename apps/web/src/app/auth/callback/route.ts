@@ -17,7 +17,11 @@ export async function GET(request: Request) {
     if (!error) {
       const { data } = await supabase.auth.getUser();
       const dest =
-        data.user && needsOnboarding(data.user) ? "/onboarding" : safeNext === "/onboarding" ? "/" : safeNext;
+        data.user && needsOnboarding(data.user)
+          ? "/onboarding"
+          : safeNext === "/onboarding" || safeNext === "/"
+            ? "/garages"
+            : safeNext;
       return NextResponse.redirect(`${origin}${dest}`);
     }
     return NextResponse.redirect(
